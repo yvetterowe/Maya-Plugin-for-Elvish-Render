@@ -10,7 +10,7 @@ LightWriter::~LightWriter()
 
 }
 
-MStatus LightWriter::ExtractGeometry()
+MStatus LightWriter::ExtractInfo()
 {
 	return MStatus::kSuccess;
 }

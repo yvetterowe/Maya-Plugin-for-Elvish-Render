@@ -177,8 +177,8 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 		MGlobal::displayError("new writer fail!");
 		return MStatus::kFailure;
 	}
-	if (MStatus::kFailure == pWriter->ExtractGeometry()) {
-		MGlobal::displayError("extractGeometry fail!");
+	if (MStatus::kFailure == pWriter->ExtractInfo()) {
+		MGlobal::displayError("extractInfo fail!");
 		delete pWriter;
 		return MStatus::kFailure;
 	}
