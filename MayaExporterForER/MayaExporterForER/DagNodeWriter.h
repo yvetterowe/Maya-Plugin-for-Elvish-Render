@@ -12,9 +12,10 @@ class DagNodeWriter
 public:
 	DagNodeWriter(MDagPath dagPath, MStatus status);
 	virtual ~DagNodeWriter();
-	virtual MStatus ExtractGeometry() = 0;
+	virtual MStatus ExtractInfo() = 0;
 	virtual MStatus WriteToFile(ostream& os) = 0;
 
 protected:
 	MDagPath* fpath;
+	MString fname;
 };

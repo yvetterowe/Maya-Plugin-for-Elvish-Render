@@ -10,7 +10,7 @@ CamaraWriter::~CamaraWriter()
 
 }
 
-MStatus CamaraWriter::ExtractGeometry()
+MStatus CamaraWriter::ExtractInfo()
 {
 	return MStatus::kSuccess;
 }
