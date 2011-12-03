@@ -6,6 +6,7 @@ MeshWriter::MeshWriter(MDagPath dagPath, MStatus status): DagNodeWriter(dagPath,
 {
 	fMesh = new MFnMesh(dagPath,&status);
 	fname = fMesh->name();
+	fInstName = MString("inst"+fname);
 }
 
 MeshWriter::~MeshWriter()
@@ -75,6 +76,8 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 	}
 	os<<"end object"<<"\n";
 	os<<"\n";
+
+	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
 }
 

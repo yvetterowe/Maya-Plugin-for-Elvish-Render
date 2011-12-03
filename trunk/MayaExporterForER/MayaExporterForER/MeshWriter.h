@@ -14,18 +14,18 @@ public:
 	MeshWriter(MDagPath dagPath, MStatus status);
 	virtual ~MeshWriter();
 
-	virtual MStatus		ExtractInfo();
-	virtual MStatus		WriteToFile(ostream& os);
+	virtual MStatus			ExtractInfo();
+	virtual MStatus			WriteToFile(ostream& os);
 
 private:
-	MFnMesh*			fMesh;
-	MPointArray			fVertexArray;
-	MFloatVectorArray	fNormalArray;
-	MIntArray			fFaceTriangleCntArray;
-	MIntArray			fFaceTriangleVertexArray;
+	MFnMesh*				fMesh;
+	MPointArray				fVertexArray;
+	MFloatVectorArray		fNormalArray;
+	MIntArray				fFaceTriangleCntArray;
+	MIntArray				fFaceTriangleVertexArray;
 
 	//helper methods
-	MStatus				outputVertex(ostream& os);
-	MStatus				outputNormal(ostream& os);
-	MStatus outputTriangleVertexIndex(ostream& os);
+	MStatus					outputVertex(ostream& os);
+	MStatus					outputNormal(ostream& os);
+	MStatus					outputTriangleVertexIndex(ostream& os);
 };

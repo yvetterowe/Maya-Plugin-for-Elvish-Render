@@ -33,8 +33,8 @@
 class ExportMayaScene : public MPxCommand
 {
 public:
-	MStatus doIt( const MArgList& args );
-	static void* creator();
+	MStatus					doIt( const MArgList& args );
+	static void*			creator();
 };
 
 

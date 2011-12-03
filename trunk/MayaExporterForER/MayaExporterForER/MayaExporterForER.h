@@ -25,9 +25,5 @@ private:
 	virtual MStatus         exportAll(ostream& os);
 	virtual MStatus         exportSelection(ostream& os);
 	virtual MStatus         processDagNode(const MDagPath dagPath, ostream& os);
-	DagNodeWriter*          createDagNodeWriter(const MDagPath dagPath, MStatus& status);
-
-	//helper methods
-	enum DagNodeType {MESH,CAMARA,LIGHT,TYPE_CNT};
-	DagNodeType getNodeType(MDagPath path);
+	DagNodeWriter*			createDagNodeWriter(const MDagPath dagPath, MStatus& status);
 };
