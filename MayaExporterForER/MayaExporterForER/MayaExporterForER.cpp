@@ -28,7 +28,9 @@ MayaExporterForER::~MayaExporterForER()
 
 }
 
-MStatus MayaExporterForER::writer( const MFileObject& file, const MString& optionsString, MPxFileTranslator::FileAccessMode mode )
+MStatus MayaExporterForER::writer( const MFileObject& file, 
+								   const MString& optionsString, 
+								   MPxFileTranslator::FileAccessMode mode )
 {
 #if defined (OSMac_)
 	char nameBuffer[MAXPATHLEN];
@@ -44,9 +46,6 @@ MStatus MayaExporterForER::writer( const MFileObject& file, const MString& optio
 	}
 	newFile.setf(ios::unitbuf);
 
-	//check which objects are to be exported, and invoke the corresponding
-	//methods; only 'export all' and 'export selection' are allowed
-	//
 	if (MPxFileTranslator::kExportAccessMode == mode) {
 		if (MStatus::kFailure == exportAll(newFile)) {
 			return MStatus::kFailure;
@@ -110,7 +109,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	
 	MStatus status;
 	
-	MItDag itDag(MItDag::kDepthFirst, MFn::kMesh, &status);
+	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
 	if (MStatus::kFailure == status) {
 		MGlobal::displayError("MItDag::MItDag");
@@ -130,10 +129,11 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 		if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
 			if (MStatus::kFailure == processDagNode(dagPath, os)) {
-				return MStatus::kFailure;
+					continue;
 			}
-		}
+		}			
 	}
+
 	return MStatus::kSuccess;
 }
 
@@ -172,10 +172,6 @@ MStatus MayaExporterForER::exportSelection( ostream& os )
 MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 {
 	MGlobal::displayInfo("begin to process node!\n");
-
-	//if(dagPath.hasFn(MFn::kMesh))
-	//MFn::kw
-	os<<dagPath.apiType();
 	
 	MStatus status;
 	DagNodeWriter* pWriter = createDagNodeWriter(dagPath, status);
