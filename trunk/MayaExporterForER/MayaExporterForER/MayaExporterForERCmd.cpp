@@ -17,8 +17,11 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MPxCommand.h>
 #include <maya/MIOStream.h>
-
+#include <maya/MFileObject.h>
+#include <maya/MPxFileTranslator.h>
 #include <stdio.h>
+
+#include "MayaExporterForER.h"
 
 
 // Use helper macro to register a command with Maya.  It creates and
@@ -55,7 +58,17 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 	// Since this class is derived off of MPxCommand, you can use the 
 	// inherited methods to return values and set error messages
 	//
+
+	MayaExporterForER* exporter = new MayaExporterForER;
+	MString filename("fout.txt");
+	MFileObject file;
+	file.setRawName(filename);
+
+	exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
+
 	setResult( "MayaExporterForER command executed!\n" );
+
+	delete exporter;
 
 	return stat;
 }

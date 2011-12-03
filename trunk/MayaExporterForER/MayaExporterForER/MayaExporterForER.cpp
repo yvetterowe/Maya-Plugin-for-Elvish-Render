@@ -106,9 +106,11 @@ bool MayaExporterForER::isVisible( MFnDagNode& fnDag, MStatus& status )
 
 MStatus MayaExporterForER::exportAll( ostream& os )
 {
+	MGlobal::displayInfo("begin to export all!");
+	
 	MStatus status;
 	
-	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
+	MItDag itDag(MItDag::kDepthFirst, MFn::kMesh, &status);
 
 	if (MStatus::kFailure == status) {
 		MGlobal::displayError("MItDag::MItDag");
@@ -169,8 +171,18 @@ MStatus MayaExporterForER::exportSelection( ostream& os )
 
 MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 {
+	MGlobal::displayInfo("begin to process node!\n");
+
+	//if(dagPath.hasFn(MFn::kMesh))
+	//MFn::kw
+	os<<dagPath.apiType();
+	
 	MStatus status;
 	DagNodeWriter* pWriter = createDagNodeWriter(dagPath, status);
+	if(NULL == pWriter){
+		MGlobal::displayInfo("pWriter null!");
+		return MStatus::kFailure;
+	}
 	
 	if (MStatus::kFailure == status) {
 		delete pWriter;
@@ -198,6 +210,7 @@ DagNodeWriter* MayaExporterForER::createDagNodeWriter( const MDagPath dagPath, M
 	{
 	case MFn::kMesh:
 		{
+			MGlobal::displayInfo("new a mesh writer!\n");
 			return new MeshWriter(dagPath,status);
 			break;
 		}
