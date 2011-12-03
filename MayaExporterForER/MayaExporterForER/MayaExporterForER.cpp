@@ -215,7 +215,7 @@ DagNodeWriter* MayaExporterForER::createDagNodeWriter( const MDagPath dagPath, M
 			return new CamaraWriter(dagPath,status);
 			break;
 		}
-	case MFn::kLight:
+	case MFn::kPointLight:
 		{
 			return new LightWriter(dagPath,status);
 			break;
