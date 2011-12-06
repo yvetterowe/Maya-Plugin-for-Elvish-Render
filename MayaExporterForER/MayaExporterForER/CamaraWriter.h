@@ -2,6 +2,8 @@
 
 #include "DagNodeWriter.h"
 
+#include <maya/MFnCamera.h>
+
 class CamaraWriter : public DagNodeWriter
 {
 public:
@@ -9,4 +11,13 @@ public:
 	virtual ~CamaraWriter();
 	virtual MStatus			ExtractInfo();
 	virtual MStatus			WriteToFile(ostream& os);
+
+private:
+
+	//helper methods
+	void outputOutPutConfig(ostream& os);
+	MFnCamera*				fCamara;
+	double					fFocal;
+	double					fAperture;
+	double					fAspect;
 };

@@ -32,25 +32,7 @@ MStatus MeshWriter::ExtractInfo()
 		MGlobal::displayInfo("MFnmesh::getTriangles");
 		return MStatus::kFailure;
 	}
-	/*MStatus status;
-	MObject mObj(*fMesh);
-	MItMeshPolygon itMeshPolygon(mObj,&status);
 
-	if(MStatus::kFailure == status) {
-		return status;
-	}
-
-	for(;!itMeshPolygon.isDone();itMeshPolygon.next())
-	{
-		int triangleCnt;
-		if(MStatus::kFailure == itMeshPolygon.numTriangles(triangleCnt)){
-			return MStatus::kFailure;
-		}
-		if(MStatus::kFailure == itMeshPolygon.getTriangles(fVertexArray,fFaceVertexIndexArray,MSpace::kWorld)){
-			return MStatus::kFailure;
-		}
-	}*/
-	
 	return MStatus::kSuccess;
 }
 

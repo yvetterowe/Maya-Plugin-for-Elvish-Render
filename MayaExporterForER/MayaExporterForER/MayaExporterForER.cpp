@@ -11,6 +11,7 @@
 #include <maya/MIOStream.h>
 #include <maya/MFStream.h>
 #include <maya/MFnDagNode.h>
+#include <maya/MFnLambertShader.h>
 
 #include "DagNodeWriter.h"
 #include "MeshWriter.h"
@@ -127,11 +128,50 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 		MFnDagNode dagNode(dagPath);
 
-		if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
+		
+		if(dagPath.hasFn(MFn::kMesh) && (!dagPath.hasFn(MFn::kTransform))){
+			os<<"this is "<<dagNode.typeName().asChar()<<dagNode.name().asChar()<<"\n";
+			MFnMesh fnMesh(dagPath);
+
+			MObjectArray shaders;
+			MIntArray indice;
+			if(MStatus::kFailure == fnMesh.getConnectedShaders(0,shaders,indice)){
+				os<<"get shaders fail!\n";
+			}
+			else
+			{
+				if(shaders.length()!=0){
+					for(int i = 0;i<shaders.length();++i)
+					{
+						MPlugArray connections;
+						MFnDependencyNode shaderGroup(shaders[i]);
+						MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
+						shaderPlug.connectedTo(connections,true,false);
+						
+						for(int j = 0;j<connections.length();++j)
+						{
+							if(connections[j].node().hasFn(MFn::kLambert)){
+								MPlugArray plugs;
+								MFnLambertShader lambertShader(connections[j].node());
+								os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
+							}
+						}
+					}
+					os<<"\n";
+				}
+				else
+				{
+					os<<"no shaders!\n";
+				}
+			}
+		}
+
+
+		/*if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
 			if (MStatus::kFailure == processDagNode(dagPath, os)) {
 					continue;
 			}
-		}			
+		}*/			
 	}
 
 	return MStatus::kSuccess;
@@ -185,6 +225,9 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 		MGlobal::displayError("new writer fail!");
 		return MStatus::kFailure;
 	}
+
+	instanceContainer.append(pWriter->GetInstName());
+
 	if (MStatus::kFailure == pWriter->ExtractInfo()) {
 		MGlobal::displayError("extractInfo fail!");
 		delete pWriter;
@@ -231,6 +274,18 @@ DagNodeWriter* MayaExporterForER::createDagNodeWriter( const MDagPath dagPath, M
 MString MayaExporterForER::defaultExtension() const
 {
 	return MString("ess");
+}
+
+void MayaExporterForER::outputRenderConfig( ostream& os )
+{
+	os<<"instgroup \"world\""<<"\n";
+	for(int i = 0;i<instanceContainer.length();++i)
+	{
+		os<<"\t"<<"add_instance "<<"\""<<instanceContainer[i].asChar()<<"\"\n";
+	}
+	os<<"end instgroup"<<"\n";
+
+
 }
 
 

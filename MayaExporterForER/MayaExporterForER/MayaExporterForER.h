@@ -1,6 +1,7 @@
 #pragma once
 
 #include <maya/MPxFileTranslator.h>
+#include <maya/MStringArray.h>
 
 class MDagPath;
 class MFnDagNode;
@@ -26,4 +27,8 @@ private:
 	virtual MStatus         exportSelection(ostream& os);
 	virtual MStatus         processDagNode(const MDagPath dagPath, ostream& os);
 	DagNodeWriter*			createDagNodeWriter(const MDagPath dagPath, MStatus& status);
+
+	void					outputRenderConfig(ostream& os);
+
+	MStringArray			instanceContainer;
 };

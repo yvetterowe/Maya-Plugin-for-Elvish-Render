@@ -17,6 +17,8 @@ public:
 	virtual MStatus			WriteToFile(ostream& os) = 0;
 	virtual void			outputInstance(ostream& os, MString instName);
 
+	MString					GetInstName();
+
 protected:
 	//helpers
 	static void				outputTabs (ostream & os, int tabCount);
@@ -24,4 +26,7 @@ protected:
 	MDagPath*				fpath;
 	MString					fname;
 	MString					fInstName;
+
+private:
+	void					outputOptions(ostream&os);
 };
