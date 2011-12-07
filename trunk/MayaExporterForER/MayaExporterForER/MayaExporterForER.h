@@ -24,11 +24,13 @@ public:
 private: 
 	virtual bool            isVisible(MFnDagNode& fnDag, MStatus& status);
 	virtual MStatus         exportAll(ostream& os);
-	virtual MStatus         exportSelection(ostream& os);
 	virtual MStatus         processDagNode(const MDagPath dagPath, ostream& os);
 	DagNodeWriter*			createDagNodeWriter(const MDagPath dagPath, MStatus& status);
 
 	void					outputRenderConfig(ostream& os);
+	void                    outputOptions(ostream& os);
 
 	MStringArray			instanceContainer;
+	MString                 camaraInstance;
+	MString					option;
 };

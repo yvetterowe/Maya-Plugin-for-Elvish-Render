@@ -51,12 +51,7 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 		if (MStatus::kFailure == exportAll(newFile)) {
 			return MStatus::kFailure;
 		}
-	} 
-	else if (MPxFileTranslator::kExportActiveAccessMode == mode) {
-		if (MStatus::kFailure == exportSelection(newFile)) {
-			return MStatus::kFailure;
-		}
-	} 
+	}  
 	else {
 		return MStatus::kFailure;
 	}
@@ -109,6 +104,8 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	MGlobal::displayInfo("begin to export all!");
 	
 	MStatus status;
+
+	outputOptions(os);
 	
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
@@ -128,84 +125,41 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 		MFnDagNode dagNode(dagPath);
 
-		
-		if(dagPath.hasFn(MFn::kMesh) && (!dagPath.hasFn(MFn::kTransform))){
-			os<<"this is "<<dagNode.typeName().asChar()<<dagNode.name().asChar()<<"\n";
+		//mesh
+		/*if(dagPath.hasFn(MFn::kMesh) && (!dagPath.hasFn(MFn::kTransform))){
+			//os<<"this is "<<dagNode.typeName().asChar()<<dagNode.name().asChar()<<"\n";
 			MFnMesh fnMesh(dagPath);
 
 			MObjectArray shaders;
 			MIntArray indice;
-			if(MStatus::kFailure == fnMesh.getConnectedShaders(0,shaders,indice)){
-				os<<"get shaders fail!\n";
-			}
-			else
+			fnMesh.getConnectedShaders(0,shaders,indice);
+
+			for(int i = 0;i<shaders.length();++i)
 			{
-				if(shaders.length()!=0){
-					for(int i = 0;i<shaders.length();++i)
-					{
-						MPlugArray connections;
-						MFnDependencyNode shaderGroup(shaders[i]);
-						MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
-						shaderPlug.connectedTo(connections,true,false);
-						
-						for(int j = 0;j<connections.length();++j)
-						{
-							if(connections[j].node().hasFn(MFn::kLambert)){
-								MPlugArray plugs;
-								MFnLambertShader lambertShader(connections[j].node());
-								os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
-							}
-						}
-					}
-					os<<"\n";
-				}
-				else
+				MPlugArray connections;
+				MFnDependencyNode shaderGroup(shaders[i]);
+				MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
+				shaderPlug.connectedTo(connections,true,false);
+
+				for(int j = 0;j<connections.length();++j)
 				{
-					os<<"no shaders!\n";
+					if(connections[j].node().hasFn(MFn::kLambert)){
+						MPlugArray plugs;
+						MFnLambertShader lambertShader(connections[j].node());
+						os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
+					}
 				}
+				os<<"\n";
 			}
-		}
+		}*/
 
-
-		/*if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
-			if (MStatus::kFailure == processDagNode(dagPath, os)) {
-					continue;
-			}
-		}*/			
+		if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
+			processDagNode(dagPath,os);
+		}		
 	}
 
-	return MStatus::kSuccess;
-}
+	outputRenderConfig(os);
 
-MStatus MayaExporterForER::exportSelection( ostream& os )
-{
-	MStatus status;
-	MSelectionList selectionList;
-	
-	if (MStatus::kFailure == MGlobal::getActiveSelectionList(selectionList)) {
-		MGlobal::displayError("MGlobal::getActiveSelectionList");
-		return MStatus::kFailure;
-	}
-
-	MItSelectionList itSelectionList(selectionList, MFn::kInvalid, &status);   
-	if (MStatus::kFailure == status) {
-		return MStatus::kFailure;
-	}
-
-	for (itSelectionList.reset(); !itSelectionList.isDone(); itSelectionList.next()) 
-	{
-		MDagPath dagPath;
-
-		if (MStatus::kFailure == itSelectionList.getDagPath(dagPath)) {
-			MGlobal::displayError("MItSelectionList::getDagPath");
-			return MStatus::kFailure;
-		}
-
-		if (MStatus::kFailure == processDagNode(dagPath, os)) {
-			return MStatus::kFailure;
-		}
-	}
-	
 	return MStatus::kSuccess;
 }
 
@@ -227,6 +181,9 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 	}
 
 	instanceContainer.append(pWriter->GetInstName());
+	if(dagPath.apiType() == MFn::kCamera){
+		camaraInstance = pWriter->GetInstName();
+	}
 
 	if (MStatus::kFailure == pWriter->ExtractInfo()) {
 		MGlobal::displayError("extractInfo fail!");
@@ -284,8 +241,18 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 		os<<"\t"<<"add_instance "<<"\""<<instanceContainer[i].asChar()<<"\"\n";
 	}
 	os<<"end instgroup"<<"\n";
+	os<<"\n";
 
-
+	os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
 }
 
+void MayaExporterForER::outputOptions( ostream& os )
+{
+	os<<"options \"opt\""<<"\n";
+	os<<"\t"<<"samples 0 2"<<"\n";
+	os<<"\t"<<"contrast 0.05 0.05 0.05 0.05"<<"\n";
+	os<<"\t"<<"filter \"gaussian\" 3.0"<<"\n";
+	os<<"end options"<<"\n";
+	os<<"\n";
+}
 

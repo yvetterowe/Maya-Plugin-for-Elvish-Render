@@ -28,5 +28,4 @@ protected:
 	MString					fInstName;
 
 private:
-	void					outputOptions(ostream&os);
 };

@@ -1,6 +1,7 @@
 #include "MeshWriter.h"
 
 #include <maya/MItMeshPolygon.h>
+#include <maya/MFnLambertShader.h>
 
 MeshWriter::MeshWriter(MDagPath dagPath, MStatus status): DagNodeWriter(dagPath,status)
 {
@@ -33,6 +34,25 @@ MStatus MeshWriter::ExtractInfo()
 		return MStatus::kFailure;
 	}
 
+	if(MStatus::kFailure == fMesh->getConnectedShaders(0,fShaderArray,fShaderFaceArray)){
+		/*for(int i = 0;i<fShaderArray.length();++i)
+		{
+			MPlugArray connections;
+			MFnDependencyNode shaderGroup(fShaderArray[i]);
+			MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
+			shaderPlug.connectedTo(connections,true,false);
+
+			for(int j = 0;j<connections.length();++j)
+			{
+				if(connections[j].node().hasFn(MFn::kLambert)){
+					MFnLambertShader lambertShader(connections[j].node());
+					os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
+				}
+			}
+			os<<"\n";
+		}*/
+	}
+
 	return MStatus::kSuccess;
 }
 
@@ -40,6 +60,8 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write mesh info to file!\n");
 	
+	outputShader(os);
+
 	os<<"object "<<"\""<<fname.asChar()<<"\" "<<"\"poly\""<<"\n";
 
 	if(MStatus::kFailure == outputVertex(os)) {
@@ -129,4 +151,53 @@ MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
 	}
 
 	return MStatus::kSuccess;
+}
+
+MStatus MeshWriter::outputShader( ostream& os )
+{
+	MGlobal::displayInfo("begin to output shaders!\n");
+	if(fShaderArray.length() == 0){
+		return MStatus::kFailure;
+	}
+
+	for(int i = 0;i<fShaderArray.length();++i)
+	{
+		MPlugArray connections;
+		MFnDependencyNode shaderGroup(fShaderArray[i]);
+		MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
+		shaderPlug.connectedTo(connections,true,false);
+
+		for(int j = 0;j<connections.length();++j)
+		{
+			if(connections[j].node().hasFn(MFn::kLambert)){
+				MFnLambertShader lambertShader(connections[j].node());
+				os<<"shader "<<"\""<<lambertShader.name().asChar()<<"\"\n";
+				outputTabs(os,1);os<<"param_vector \"diffuse\" "
+								   << lambertShader.diffuseCoeff()<<" "
+								   <<lambertShader.diffuseCoeff()<<" "
+								   <<lambertShader.diffuseCoeff()<<"\n";
+				os<<"end shader\n";
+				os<<"\n";
+
+				fMaterialName = MString("mtl"+lambertShader.name());
+				os<<"material "<<"\""<<fMaterialName.asChar()<<"\"\n";
+				outputTabs(os,1);os<<"add_surface "<<"\""<<lambertShader.name().asChar()<<"\"\n";
+				os<<"end material\n";
+
+				os<<"\n";
+			}
+		}
+		os<<"\n";
+	}
+
+	return MStatus::kSuccess;
+}
+
+void MeshWriter::outputInstance( ostream&os,MString instName )
+{
+	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
+	outputTabs(os,1); os<<"element "<<"\""<<fname.asChar()<<"\"\n";
+	outputTabs(os,1); os<<"add_material "<<"\""<<fMaterialName.asChar()<<"\"\n";
+	os<<"end instance"<<"\n";
+	os<<"\n";
 }
