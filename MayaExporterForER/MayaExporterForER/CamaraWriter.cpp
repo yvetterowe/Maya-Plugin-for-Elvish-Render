@@ -21,36 +21,43 @@ MStatus CamaraWriter::ExtractInfo()
 	if(MStatus::kFailure == status){
 		return MStatus::kFailure;
 	}
+	MGlobal::displayInfo("get focal!\n");
 
 	fAperture = fCamara->horizontalFilmAperture(&status);
 	if(MStatus::kFailure == status){
 		return MStatus::kFailure;
 	}
+	MGlobal::displayInfo("get aperture!\n");
 
 	fAspect = fCamara->aspectRatio(&status);
 	if(MStatus::kFailure == status){
 		return MStatus::kFailure;
 	}
-	
+	MGlobal::displayInfo("get aspect!\n");
+
 	return MStatus::kSuccess;
 }
 
 MStatus CamaraWriter::WriteToFile( ostream& os )
 {
-	os<<"camara "<<"\""<<fname<<"\""<<"\n";
+	MGlobal::displayInfo("begin to write camara info to file!\n");
+	os<<"camara "<<"\""<<fname.asChar()<<"\""<<"\n";
 	outputOutPutConfig(os);
 	outputTabs(os,1); os<<"focal "<<fFocal<<"\n";
 	outputTabs(os,1); os<<"aperture "<<fAperture<<"\n";
 	outputTabs(os,1); os<<"aspect "<<fAspect<<"\n";
 	outputTabs(os,1); os<<"resolution 320 240"<<"\n";
 	os<<"end camara"<<"\n";
+	os<<"\n";
+
+	outputInstance(os,fInstName);
 
 	return MStatus::kSuccess;
 }
 
 void CamaraWriter::outputOutPutConfig( ostream& os )
 {
-	outputTabs(os,1); os<<"\"er.frame.0001.bmp\" \"bmp\" \"rgb\""<<"\n";
+	outputTabs(os,1); os<<"output "<<"\"er.frame.0001.bmp\" \"bmp\" \"rgb\""<<"\n";
 	outputTabs(os,2); os<<"output_variable \"color\" \"vector\""<<"\n";
 	outputTabs(os,1); os<<"end output"<<"\n";
 }

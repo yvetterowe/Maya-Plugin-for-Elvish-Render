@@ -16,6 +16,7 @@ public:
 
 	virtual MStatus			ExtractInfo();
 	virtual MStatus			WriteToFile(ostream& os);
+	virtual void			outputInstance(ostream&os,MString instName);
 
 private:
 	MFnMesh*				fMesh;
@@ -23,9 +24,13 @@ private:
 	MFloatVectorArray		fNormalArray;
 	MIntArray				fFaceTriangleCntArray;
 	MIntArray				fFaceTriangleVertexArray;
+	MObjectArray            fShaderArray;
+	MIntArray				fShaderFaceArray;
+	MString					fMaterialName;
 
 	//helper methods
 	MStatus					outputVertex(ostream& os);
 	MStatus					outputNormal(ostream& os);
 	MStatus					outputTriangleVertexIndex(ostream& os);
+	MStatus					outputShader(ostream& os);
 };
