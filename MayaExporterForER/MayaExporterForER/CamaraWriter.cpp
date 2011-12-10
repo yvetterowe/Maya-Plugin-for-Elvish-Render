@@ -40,14 +40,14 @@ MStatus CamaraWriter::ExtractInfo()
 
 MStatus CamaraWriter::WriteToFile( ostream& os )
 {
-	MGlobal::displayInfo("begin to write camara info to file!\n");
-	os<<"camara "<<"\""<<fname.asChar()<<"\""<<"\n";
+	MGlobal::displayInfo("begin to write camera info to file!\n");
+	os<<"camera "<<"\""<<fname.asChar()<<"\""<<"\n";
 	outputOutPutConfig(os);
 	outputTabs(os,1); os<<"focal "<<fFocal<<"\n";
 	outputTabs(os,1); os<<"aperture "<<fAperture<<"\n";
 	outputTabs(os,1); os<<"aspect "<<fAspect<<"\n";
 	outputTabs(os,1); os<<"resolution 320 240"<<"\n";
-	os<<"end camara"<<"\n";
+	os<<"end camera"<<"\n";
 	os<<"\n";
 
 	outputInstance(os,fInstName);
@@ -57,7 +57,7 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 
 void CamaraWriter::outputOutPutConfig( ostream& os )
 {
-	outputTabs(os,1); os<<"output "<<"\"er.frame.0001.bmp\" \"bmp\" \"rgb\""<<"\n";
+	outputTabs(os,1); os<<"output "<<"\"test.bmp\" \"bmp\" \"rgb\""<<"\n";
 	outputTabs(os,2); os<<"output_variable \"color\" \"vector\""<<"\n";
 	outputTabs(os,1); os<<"end output"<<"\n";
 }
