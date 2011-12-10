@@ -46,6 +46,8 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 		return MS::kFailure;
 	}
 	newFile.setf(ios::unitbuf);
+	newFile.precision(6);
+	newFile.setf(ios::fixed, ios::floatfield);
 
 	if (MPxFileTranslator::kExportAccessMode == mode) {
 		if (MStatus::kFailure == exportAll(newFile)) {
