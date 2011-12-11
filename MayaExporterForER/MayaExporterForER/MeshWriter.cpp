@@ -155,7 +155,14 @@ MStatus MeshWriter::outputShader( ostream& os )
 				MFnLambertShader lambertShader(connections[j].node());
 				os<<"shader "<<"\""<<lambertShader.name().asChar()<<"\"\n";
 				outputTabs(os,1);os<<"param_string \"desc\" \"opaque\"\n";
-				outputTabs(os,1);os<<StringPrintf("param_vector \"diffuse\" %.6lf %.6lf %.6lf\n",lambertShader.diffuseCoeff(),lambertShader.diffuseCoeff(),lambertShader.diffuseCoeff());
+				outputTabs(os,1);os<<StringPrintf("param_vector \"Cs\" %.6lf %.6lf %.6lf\n",
+												   lambertShader.color().r
+												  ,lambertShader.color().g
+												  ,lambertShader.color().b);
+				outputTabs(os,1);os<<StringPrintf("param_vector \"diffuse\" %.6lf %.6lf %.6lf\n",
+												   lambertShader.diffuseCoeff()
+												  ,lambertShader.diffuseCoeff()
+					                              ,lambertShader.diffuseCoeff());
 				os<<"end shader\n";
 				os<<"\n";
 
