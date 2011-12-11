@@ -5,6 +5,7 @@
 #include <maya/MGlobal.h>
 #include <maya/MDagPath.h>
 #include <maya/MItDependencyGraph.h>
+#include <maya/MMatrix.h>
 
 
 class DagNodeWriter
@@ -22,10 +23,10 @@ public:
 protected:
 	//helpers
 	static void				outputTabs (ostream & os, int tabCount);
-	
+	void					outputTransform(ostream& os);
 	MDagPath*				fpath;
 	MString					fname;
 	MString					fInstName;
-
+	MMatrix					fTransMat;
 private:
 };

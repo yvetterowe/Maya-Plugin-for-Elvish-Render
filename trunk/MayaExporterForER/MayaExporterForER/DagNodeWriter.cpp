@@ -1,8 +1,12 @@
 #include "DagNodeWriter.h"
 
+#include <maya/MFnDagNode.h>
+
 DagNodeWriter::DagNodeWriter(MDagPath dagPath, MStatus status)
 {
 	fpath = new MDagPath(dagPath);
+	MFnDagNode node(dagPath);
+	fTransMat = node.transformationMatrix();
 }
 
 DagNodeWriter::~DagNodeWriter()
@@ -20,8 +24,8 @@ void DagNodeWriter::outputTabs( ostream& os, int tabCount )
 void DagNodeWriter::outputInstance( ostream& os, MString instName )
 {
 	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
-	outputTabs(os,1);
-	os<<"element "<<"\""<<fname.asChar()<<"\"\n";
+	outputTabs(os,1); os<<"element "<<"\""<<fname.asChar()<<"\"\n";
+	outputTabs(os,1); outputTransform(os);
 	os<<"end instance"<<"\n";
 	os<<"\n";
 }
@@ -29,4 +33,17 @@ void DagNodeWriter::outputInstance( ostream& os, MString instName )
 MString DagNodeWriter::GetInstName()
 {
 	return fInstName;
+}
+
+void DagNodeWriter::outputTransform( ostream& os )
+{
+	os<<"transform ";
+	for(int i = 0;i<4;++i)
+	{
+		for(int j = 0;j<4;++j)
+		{
+			os<<fTransMat(i,j)<<" ";
+		}
+	}
+	os<<"\n";
 }
