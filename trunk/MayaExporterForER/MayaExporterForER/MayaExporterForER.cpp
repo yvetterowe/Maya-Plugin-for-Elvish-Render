@@ -122,7 +122,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	for(;!itDag.isDone();itDag.next()) 
 	{
 		MDagPath dagPath;
-		
+
 		if (MStatus::kFailure == itDag.getPath(dagPath)) {
 			MGlobal::displayError("MDagPath::getPath");
 			return MStatus::kFailure;
@@ -130,13 +130,35 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 		MFnDagNode dagNode(dagPath);
 
-		//dagNode.transformationMatrix()
-
 		if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
 			processDagNode(dagPath,os);
 		}		
 	}
 
+	//for default perspective camera
+	MItDag itCamera(MItDag::kDepthFirst, MFn::kCamera, &status);
+
+	if (MStatus::kFailure == status) {
+		MGlobal::displayError("MItDag::MItDag");
+		return MStatus::kFailure;
+	}
+
+	for(;!itCamera.isDone();itCamera.next()) 
+	{
+		MFnCamera cam(itCamera.item());
+		if(cam.name()== "perspShape"){
+			MGlobal::displayInfo("find persp camera\n");
+			MDagPath dagCamPath;
+
+			if (MStatus::kFailure == itCamera.getPath(dagCamPath)) {
+				MGlobal::displayError("MDagPath::getPath");
+				return MStatus::kFailure;
+			}
+
+			processDagNode(dagCamPath,os);		
+
+		}
+	}
 	outputRenderConfig(os);
 
 	return MStatus::kSuccess;
@@ -160,6 +182,7 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 	}
 
 	instanceContainer.append(pWriter->GetInstName());
+	
 	if(dagPath.apiType() == MFn::kCamera){
 		camaraInstance = pWriter->GetInstName();
 	}
