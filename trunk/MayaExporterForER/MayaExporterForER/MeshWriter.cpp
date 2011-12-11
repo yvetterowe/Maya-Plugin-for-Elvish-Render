@@ -1,4 +1,5 @@
 #include "MeshWriter.h"
+#include "stringprintf.h"
 
 #include <maya/MItMeshPolygon.h>
 #include <maya/MFnLambertShader.h>
@@ -84,9 +85,7 @@ MStatus MeshWriter::outputVertex( ostream& os )
 	for(int i = 0;i<vertexCnt;++i)
 	{
 		outputTabs(os,1);
-		os<<fVertexArray[i].x<<" "
-		  <<fVertexArray[i].y<<" "
-		  <<fVertexArray[i].z<<"\n";
+		os<<StringPrintf("%.6lf %.6lf %.6lf\n",fVertexArray[i].x,fVertexArray[i].y,fVertexArray[i].z);	
 	}
 
 	return MStatus::kSuccess;
@@ -107,9 +106,7 @@ MStatus MeshWriter::outputNormal( ostream& os )
 	for(int i = 0;i<normalCnt;++i)
 	{
 		outputTabs(os,1);
-		os<<fNormalArray[i].x<<" "
-		  <<fNormalArray[i].y<<" "
-		  <<fNormalArray[i].z<<"\n";
+		os<<StringPrintf("%.6lf %.6lf %.6lf\n",fNormalArray[i].x,fNormalArray[i].y,fNormalArray[i].z);	
 	}
 
 	return MStatus::kSuccess;
@@ -158,10 +155,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 				MFnLambertShader lambertShader(connections[j].node());
 				os<<"shader "<<"\""<<lambertShader.name().asChar()<<"\"\n";
 				outputTabs(os,1);os<<"param_string \"desc\" \"opaque\"\n";
-				outputTabs(os,1);os<<"param_vector \"diffuse\" "
-								   << lambertShader.diffuseCoeff()<<" "
-								   <<lambertShader.diffuseCoeff()<<" "
-								   <<lambertShader.diffuseCoeff()<<"\n";
+				outputTabs(os,1);os<<StringPrintf("param_vector \"diffuse\" %.6lf %.6lf %.6lf\n",lambertShader.diffuseCoeff(),lambertShader.diffuseCoeff(),lambertShader.diffuseCoeff());
 				os<<"end shader\n";
 				os<<"\n";
 
