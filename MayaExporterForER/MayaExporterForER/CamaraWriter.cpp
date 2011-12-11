@@ -1,4 +1,5 @@
 #include "CamaraWriter.h"
+#include "stringprintf.h"
 
 CamaraWriter::CamaraWriter(MDagPath dagPath, MStatus status) : DagNodeWriter(dagPath,status)
 {
@@ -43,9 +44,9 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 	MGlobal::displayInfo("begin to write camera info to file!\n");
 	os<<"camera "<<"\""<<fname.asChar()<<"\""<<"\n";
 	outputOutPutConfig(os);
-	outputTabs(os,1); os<<"focal "<<fFocal<<"\n";
-	outputTabs(os,1); os<<"aperture "<<fAperture<<"\n";
-	outputTabs(os,1); os<<"aspect "<<fAspect<<"\n";
+	outputTabs(os,1); os<<StringPrintf("focal %.6lf\n",fFocal);
+	outputTabs(os,1); os<<StringPrintf("aperture %.6lf\n",fAperture);
+	outputTabs(os,1); os<<StringPrintf("aspect %.6lf\n",fAspect);
 	outputTabs(os,1); os<<"resolution 320 240"<<"\n";
 	os<<"end camera"<<"\n";
 	os<<"\n";

@@ -1,4 +1,5 @@
 #include "DagNodeWriter.h"
+#include "stringprintf.h"
 
 #include <maya/MFnDagNode.h>
 
@@ -42,7 +43,8 @@ void DagNodeWriter::outputTransform( ostream& os )
 	{
 		for(int j = 0;j<4;++j)
 		{
-			os<<fTransMat(i,j)<<" ";
+			//os<<fTransMat(i,j)<<" ";
+			os<<StringPrintf("%.6lf ",fTransMat(i,j));
 		}
 	}
 	os<<"\n";

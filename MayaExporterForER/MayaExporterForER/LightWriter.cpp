@@ -1,4 +1,5 @@
 #include "LightWriter.h"
+#include "stringprintf.h"
 
 LightWriter::LightWriter(MDagPath dagPath, MStatus status) : DagNodeWriter(dagPath,status)
 {
@@ -37,10 +38,8 @@ MStatus LightWriter::WriteToFile( ostream& os )
 	//light_shader
 	os<<"shader \"point_light_shader\"\n";
 	outputTabs(os,1); os<<"param_string \"desc\" \"pointlight\"\n";
-	outputTabs(os,1); os<<"param_scalar \"intensity\" "<<fIntensity<<"\n";
-	outputTabs(os,1); os<<"param_vector \"lightcolor\" "<<fColor.r<<" "
-														<<fColor.g<<" "
-														<<fColor.b<<"\n";
+	outputTabs(os,1); os<<StringPrintf("param_scalar \"intensity\" %.6lf\n",fIntensity);
+	outputTabs(os,1); os<<StringPrintf("param_vector \"lightcolor\" %.6lf %.6lf %.6lf\n",fColor.r,fColor.g,fColor.b);
 	os<<"end shader\n";
 	os<<"\n";
 

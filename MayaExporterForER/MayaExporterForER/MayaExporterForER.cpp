@@ -41,6 +41,7 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 	const MString fileName = file.fullName();
 #endif
 	std::ostringstream out;
+	//out<<std::fixed();
 	ofstream newFile(fileName.asChar(), ios::out);
 	if (!newFile) {
 		MGlobal::displayError(fileName + ": could not be opened for reading");
