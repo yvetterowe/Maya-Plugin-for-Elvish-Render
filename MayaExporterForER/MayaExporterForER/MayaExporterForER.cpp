@@ -13,11 +13,11 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MFnLambertShader.h>
 
+#include <sstream>
 #include "DagNodeWriter.h"
 #include "MeshWriter.h"
 #include "CamaraWriter.h"
 #include "LightWriter.h"
-
 
 MayaExporterForER::MayaExporterForER()
 {
@@ -40,14 +40,15 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 #else
 	const MString fileName = file.fullName();
 #endif
+	std::ostringstream out;
 	ofstream newFile(fileName.asChar(), ios::out);
 	if (!newFile) {
 		MGlobal::displayError(fileName + ": could not be opened for reading");
 		return MS::kFailure;
 	}
-	newFile.setf(ios::unitbuf);
-	newFile.precision(6);
-	newFile.setf(ios::fixed, ios::floatfield);
+	out.setf(ios::unitbuf);
+	out.precision(6);
+	out.setf(ios::fixed, ios::floatfield);
 
 	if (MPxFileTranslator::kExportAccessMode == mode) {
 		if (MStatus::kFailure == exportAll(newFile)) {
@@ -58,6 +59,7 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 		return MStatus::kFailure;
 	}
 
+	newFile << out.str();
 	newFile.flush();
 	newFile.close();
 
@@ -127,33 +129,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 		MFnDagNode dagNode(dagPath);
 
-		//mesh
-		/*if(dagPath.hasFn(MFn::kMesh) && (!dagPath.hasFn(MFn::kTransform))){
-			//os<<"this is "<<dagNode.typeName().asChar()<<dagNode.name().asChar()<<"\n";
-			MFnMesh fnMesh(dagPath);
-
-			MObjectArray shaders;
-			MIntArray indice;
-			fnMesh.getConnectedShaders(0,shaders,indice);
-
-			for(int i = 0;i<shaders.length();++i)
-			{
-				MPlugArray connections;
-				MFnDependencyNode shaderGroup(shaders[i]);
-				MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
-				shaderPlug.connectedTo(connections,true,false);
-
-				for(int j = 0;j<connections.length();++j)
-				{
-					if(connections[j].node().hasFn(MFn::kLambert)){
-						MPlugArray plugs;
-						MFnLambertShader lambertShader(connections[j].node());
-						os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
-					}
-				}
-				os<<"\n";
-			}
-		}*/
+		//dagNode.transformationMatrix()
 
 		if(isVisible(dagNode, status) && MStatus::kSuccess == status) {
 			processDagNode(dagPath,os);

@@ -30,27 +30,12 @@ MStatus MeshWriter::ExtractInfo()
 	}
 
 	if(MStatus::kFailure == fMesh->getTriangles(fFaceTriangleCntArray,fFaceTriangleVertexArray)){
-		MGlobal::displayInfo("MFnmesh::getTriangles");
+		MGlobal::displayError("MFnmesh::getTriangles");
 		return MStatus::kFailure;
 	}
 
 	if(MStatus::kFailure == fMesh->getConnectedShaders(0,fShaderArray,fShaderFaceArray)){
-		/*for(int i = 0;i<fShaderArray.length();++i)
-		{
-			MPlugArray connections;
-			MFnDependencyNode shaderGroup(fShaderArray[i]);
-			MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
-			shaderPlug.connectedTo(connections,true,false);
-
-			for(int j = 0;j<connections.length();++j)
-			{
-				if(connections[j].node().hasFn(MFn::kLambert)){
-					MFnLambertShader lambertShader(connections[j].node());
-					os<<"lambert shader diffuse: "<<lambertShader.diffuseCoeff();
-				}
-			}
-			os<<"\n";
-		}*/
+		MGlobal::displayError("MFnmesh::getConnectedShaders");
 	}
 
 	return MStatus::kSuccess;
@@ -172,6 +157,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 			if(connections[j].node().hasFn(MFn::kLambert)){
 				MFnLambertShader lambertShader(connections[j].node());
 				os<<"shader "<<"\""<<lambertShader.name().asChar()<<"\"\n";
+				outputTabs(os,1);os<<"param_string \"desc\" \"opaque\"\n";
 				outputTabs(os,1);os<<"param_vector \"diffuse\" "
 								   << lambertShader.diffuseCoeff()<<" "
 								   <<lambertShader.diffuseCoeff()<<" "
@@ -198,6 +184,7 @@ void MeshWriter::outputInstance( ostream&os,MString instName )
 	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
 	outputTabs(os,1); os<<"element "<<"\""<<fname.asChar()<<"\"\n";
 	outputTabs(os,1); os<<"add_material "<<"\""<<fMaterialName.asChar()<<"\"\n";
+	outputTabs(os,1); outputTransform(os);
 	os<<"end instance"<<"\n";
 	os<<"\n";
 }
