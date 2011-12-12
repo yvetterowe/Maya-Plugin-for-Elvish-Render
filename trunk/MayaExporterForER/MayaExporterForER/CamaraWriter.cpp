@@ -15,7 +15,7 @@ CamaraWriter::~CamaraWriter()
 
 MStatus CamaraWriter::ExtractInfo()
 {
-	MGlobal::displayInfo("begin to export camara info!\n");
+	MGlobal::displayInfo("begin to export camera info!\n");
 
 	MStatus status;
 	fFocal = fCamara->focalLength(&status);
@@ -45,10 +45,10 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 
 	os<<"camera "<<"\""<<fname.asChar()<<"\""<<"\n";
 	outputOutPutConfig(os);
-	outputTabs(os,1); os<<StringPrintf("focal %.6lf\n",fFocal);
-	outputTabs(os,1); os<<StringPrintf("aperture %.6lf\n",fAperture);
+	outputTabs(os,1); os<<StringPrintf("focal %.6lf\n",fFocal/10.0);
+	outputTabs(os,1); os<<StringPrintf("aperture %.6lf\n",fAperture*2.54);
 	outputTabs(os,1); os<<StringPrintf("aspect %.6lf\n",fAspect);
-	outputTabs(os,1); os<<"resolution 320 240"<<"\n";
+	outputTabs(os,1); os<<"resolution 640 480"<<"\n";
 	os<<"end camera"<<"\n";
 	os<<"\n";
 
