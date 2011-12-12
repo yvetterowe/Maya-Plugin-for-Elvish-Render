@@ -2,12 +2,17 @@
 #include "stringprintf.h"
 
 #include <maya/MFnDagNode.h>
+#include <maya/MTransformationMatrix.h>
+#include <maya/MFnTransform.h>
 
 DagNodeWriter::DagNodeWriter(MDagPath dagPath, MStatus status)
 {
 	fpath = new MDagPath(dagPath);
 	MFnDagNode node(dagPath);
-	fTransMat = node.transformationMatrix();
+
+	MFnTransform transForm = MFnTransform(node.parent(0));
+	fTransMat = transForm.transformation().asMatrix();
+	//fTransMat = node.transformationMatrix();
 }
 
 DagNodeWriter::~DagNodeWriter()

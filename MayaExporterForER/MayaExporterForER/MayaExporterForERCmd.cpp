@@ -60,7 +60,7 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 	//
 
 	MayaExporterForER* exporter = new MayaExporterForER;
-	MString filename("fout.txt");
+	MString filename("C:\\Users\\lenovo\\mytest.ess");
 	MFileObject file;
 	file.setRawName(filename);
 

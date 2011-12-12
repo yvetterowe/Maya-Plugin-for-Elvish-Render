@@ -20,12 +20,12 @@ MStatus MeshWriter::ExtractInfo()
 {
 	MGlobal::displayInfo("begin to extract info of mesh!\n");
 	
-	if (MStatus::kFailure == fMesh->getPoints(fVertexArray, MSpace::kWorld)) {
+	if (MStatus::kFailure == fMesh->getPoints(fVertexArray, MSpace::kObject)) {
 		MGlobal::displayError("MFnMesh::getPoints"); 
 		return MStatus::kFailure;
 	}
 
-	if(MStatus::kFailure == fMesh->/*getNormals(fNormalArray,MSpace::kWorld)*/getVertexNormals(false,fNormalArray,MSpace::kWorld)){
+	if(MStatus::kFailure == fMesh->/*getNormals(fNormalArray,MSpace::kWorld)*/getVertexNormals(false,fNormalArray,MSpace::kObject)){
 		MGlobal::displayError("MFnMesh::getNormals");
 		return MStatus::kFailure;
 	}
@@ -154,7 +154,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 			if(connections[j].node().hasFn(MFn::kLambert)){
 				MFnLambertShader lambertShader(connections[j].node());
 				os<<"shader "<<"\""<<lambertShader.name().asChar()<<"\"\n";
-				outputTabs(os,1);os<<"param_string \"desc\" \"opaque\"\n";
+				outputTabs(os,1);os<<"param_string \"desc\" \"plastic\"\n";
 				outputTabs(os,1);os<<StringPrintf("param_vector \"Cs\" %.6lf %.6lf %.6lf\n",
 												   lambertShader.color().r
 												  ,lambertShader.color().g
@@ -174,7 +174,6 @@ MStatus MeshWriter::outputShader( ostream& os )
 				os<<"\n";
 			}
 		}
-		os<<"\n";
 	}
 
 	return MStatus::kSuccess;
