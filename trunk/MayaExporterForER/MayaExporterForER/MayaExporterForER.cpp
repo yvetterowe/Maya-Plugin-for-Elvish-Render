@@ -12,6 +12,9 @@
 #include <maya/MFStream.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MFnLambertShader.h>
+#include <maya/MFnAreaLight.h>
+#include <maya/MFnDirectionalLight.h>
+#include <maya/MFnSpotLight.h>
 
 #include <sstream>
 #include "DagNodeWriter.h"
@@ -218,6 +221,21 @@ DagNodeWriter* MayaExporterForER::createDagNodeWriter( const MDagPath dagPath, M
 			break;
 		}
 	case MFn::kPointLight:
+		{
+			return new LightWriter(dagPath,status);
+			break;
+		}
+	case MFn::kAreaLight:
+		{
+			return new LightWriter(dagPath,status);
+			break;
+		}
+	case MFn::kDirectionalLight:
+		{
+			return new LightWriter(dagPath,status);
+			break;
+		}
+	case MFn::kSpotLight:
 		{
 			return new LightWriter(dagPath,status);
 			break;
