@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\maya\maya\Maya2012\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeaderOutputFile>Debug/MayaExporterForER.pch</PrecompiledHeaderOutputFile>
@@ -52,7 +52,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>Foundation.lib;OpenMaya.lib;OpenMayaUI.lib;OpenMayaAnim.lib;odbc32.lib;odbccp32.lib;OpenMayaRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\maya\maya\Maya2012\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>Debug\MayaExporterForER.mll</OutputFile>
       <ImportLibrary>Debug/MayaExporterForER.lib</ImportLibrary>
       <ProgramDatabaseFile>Debug/MayaExporterForER.pdb</ProgramDatabaseFile>
@@ -98,6 +98,7 @@
     <ClInclude Include="LightWriter.h" />
     <ClInclude Include="MayaExporterForER.h" />
     <ClInclude Include="MeshWriter.h" />
+    <ClInclude Include="OptionType.h" />
     <ClInclude Include="stringprintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

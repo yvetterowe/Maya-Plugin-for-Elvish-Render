@@ -1,2 +1,197 @@
 RenderViewWindow;
-ExportMayaScene;
+
+//ui values
+global float $cR;
+global float $cG;
+global float $cB;
+global float $cA;
+
+global int $spMin;
+global int $spMax;
+
+global string $fName;
+global int $fSize;
+
+global int $tRf;
+global int $tRl;
+global int $tS;
+
+global int $il;
+
+global int $fg;
+
+global int $rW;
+global int $rH;
+
+global float $g;
+
+//ui command
+global string $cstR;
+global string $cstG;
+global string $cstB;
+global string $cstA;
+
+global string $splMin;
+global string $splMax; 
+
+global string $filType;
+global string $filSize;
+
+global string $trcRel;
+global string $trcRer;
+global string $trcSum;
+
+global string $illuType;
+
+global string $gathType;
+
+global string $resoWidth;
+global string $resoHeight;
+
+//ui layout
+window -menuBar true -width 400 -title "Elvish Render";
+
+menu -label "Help" -tearOff true;
+	menuItem -label "About";
+
+columnLayout;
+ 
+frameLayout -collapsable true -label "Contrast Control" -width 400;
+		string $cstR = `floatFieldGrp -precision 2 -v1 0.05 -label "R:"`;
+		string $cstG = `floatFieldGrp -precision 2 -v1 0.05 -label "G:"`;
+		string $cstB = `floatFieldGrp -precision 2 -v1 0.05 -label "B:"`;
+		string $cstA = `floatFieldGrp -precision 2 -v1 0.05 -label "A:"`;		
+setParent..;
+
+frameLayout -collapsable true -label "Sample Rate" -width 400;
+		string $splMin = `intFieldGrp -v1 0 -label "Min:"`;
+		string $splMax = `intFieldGrp -v1 2 -label "Max:"`;
+setParent..;
+
+frameLayout -collapsable true -label "Filter" -width 400;
+	columnLayout -columnAlign "center";
+		string $filType = `optionMenu -label "Type"`;
+			menuItem -label "none";
+			menuItem -label "box";
+			menuItem -label "triangle";
+			menuItem -label "catmullrom";
+			menuItem -label "gaussian";
+			menuItem -label "sinc";
+		string $filSize = `intFieldGrp -v1 0 -label "Size:"`;
+	setParent..;
+setParent..;
+
+frameLayout -collapsable true -label "Trace Depth" -width 400;
+	columnLayout;
+		string $trcRel = `intFieldGrp -v1 6 -label "Reflect:"`;
+		string $trcRer = `intFieldGrp -v1 6 -label "Refrect:"`;
+		string $trcSum = `intFieldGrp -v1 6 -label "Sum:"`;
+	setParent..;
+setParent..;
+
+frameLayout -collapsable true -label "Global Illumination" -width 400;
+	string $illuType = `intFieldGrp -v1 0 -label "Type:"`;
+setParent..;
+
+frameLayout -collapsable true -label "Final Gather" -width 400;
+	string $gathType = `intFieldGrp -v1 0 -label "Type:"`;
+setParent..;
+
+frameLayout -collapsable true -label "Image Output" -width 400;
+	columnLayout;
+		string $resoWidth = `intFieldGrp -v1 640 -label "Width:"`;
+		string $resoHeight = `intFieldGrp -v1 480 -label "Height:"`;	
+		floatSliderGrp -label "Gamma Correction:" -field true -value 0.0 -precision 1 -minValue 0.0 -maxValue 10.0;	
+	setParent..;
+setParent..;
+
+button -label "Done" -command "setOptions";
+setParent..;
+
+showWindow;
+
+global proc setOptions()
+{
+	//ui values
+	global float $cR;
+	global float $cG;
+	global float $cB;
+	global float $cA;
+
+	global int $spMin;
+	global int $spMax;
+
+	global string $fName;
+	global int $fSize;
+
+
+	global int $tRf;
+	global int $tRl;
+	global int $tS;
+
+	global int $il;
+
+	global int $fg;
+
+	global int $rW;
+	global int $rH;
+
+	global float $g;
+
+	//ui command string
+	global string $cstR;
+	global string $cstG;
+	global string $cstB;
+	global string $cstA;
+
+	global string $splMin;
+	global string $splMax;
+
+	global string $filType;
+	global string $filSize;
+
+	global string $trcRel;
+	global string $trcRer;
+	global string $trcSum;
+
+	global string $illuType;
+	
+	global string $gathType;
+
+	global string $resoWidth;
+	global string $resoHeight;
+ 
+
+	//get input field value
+	$cR = `floatFieldGrp -q -v1 $cstR`;
+	$cG = `floatFieldGrp -q -v1 $cstG`;
+	$cB = `floatFieldGrp -q -v1 $cstB`;
+	$cA = `floatFieldGrp -q -v1 $cstA`;
+	
+	$spMin = `intFieldGrp -q -v1 $splMin`;
+	$spMax = `intFieldGrp -q -v1 $splMax`;
+	
+	$fName = `optionMenu -q -v $filType`;
+	$fSize = `intFieldGrp -q -v1 $filSize`;
+
+	$tRf = `intFieldGrp -q -v1 $trcRel`;
+	$tRr = `intFieldGrp -q -v1 $trcRer`;
+	$tS = `intFieldGrp -q -v1 $trcSum`;
+
+	$il = `intFieldGrp -q -v1 $illuType`;
+
+	$fg = `intFieldGrp -q -v1 $gathType`;
+
+	$rW = `intFieldGrp -q -v1 $resoWidth`;
+	$rH = `intFieldGrp -q -v1 $resoHeight`;
+	
+	
+	ExportMayaScene -contrast $cR $cG $cB $cA
+			-sample $spMin $spMax
+			-filter $fName $fSize
+			-traceDepth $tRf $tRr $tS
+			-globalIllumi $il
+			-finalGather $fg
+			-resolution $rW $rH;
+			//-gamma $g
+}
