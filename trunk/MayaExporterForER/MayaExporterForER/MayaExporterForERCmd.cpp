@@ -10,7 +10,7 @@
 
 // Includes everything needed to register a simple MEL command with Maya.
 // 
-#include <maya/MSimple.h>
+
 #include <maya/MSimple.h>
 #include <maya/MString.h>
 #include <maya/MArgList.h>
@@ -19,18 +19,20 @@
 #include <maya/MIOStream.h>
 #include <maya/MFileObject.h>
 #include <maya/MPxFileTranslator.h>
-#include <stdio.h>
+#include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
 #include <maya/M3dView.h>
-#include <math.h>
-#include <fstream>
-#include <Windows.h>
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
 
+#include <stdio.h>
+#include <math.h>
+#include <fstream>
+#include <Windows.h>
+
 #include "MayaExporterForER.h"
 
-char* PicPathName = "D:\\test.bmp";
+char* PicPathName = "test.bmp";
 static const char * kDoNotClearBackground		= "-b";
 static const char * kDoNotClearBackgroundLong	= "-background";
 const unsigned int num_side_tiles = 8;
@@ -46,22 +48,27 @@ class ExportMayaScene : public MPxCommand
 public:
 	MStatus					doIt( const MArgList& args );
 	static void*			creator();
+
+private:
+	void					parseArglist(const MArgList& args);
+
 	//Functions for Render View of Step 3
-	virtual MStatus	 Exec(char*  PathName);
-	static MSyntax	newSyntax();
-	MStatus parseSyntax (MArgDatabase &argData);
-    bool readBmp();
-	RV_PIXEL evaluate(int x, int y);
+	virtual MStatus			Exec(char*  PathName);
+	static MSyntax			newSyntax();
+	MStatus					parseSyntax (MArgDatabase &argData);
+    bool					readBmp();
+	RV_PIXEL				evaluate(int x, int y);
+
 private:
 	//Members for Render View of Step 3
-	char* BmpName;
-	unsigned char* pBmpBuf;
-	int width;
-	int height;
-	RGBQUAD* pColorTable;
-	int biBitCount;
-	int lineByte;
-	bool doNotClearBackground;
+	char*					BmpName;
+	unsigned char*			pBmpBuf;
+	int						width;
+	int						height;
+	RGBQUAD*				pColorTable;
+	int						biBitCount;
+	int						lineByte;
+	bool					doNotClearBackground;
 };
 
 ///////////////////////////////ER_Render_View_Fuc////////////////////////////////////////////////
@@ -111,6 +118,7 @@ MStatus ExportMayaScene::parseSyntax (MArgDatabase &argData)
 
 MStatus ExportMayaScene::Exec(char* PathName)
 {
+	MGlobal::displayInfo("Exec() begin!\n");
 	MStatus stat = MS::kSuccess;
 	BmpName = PathName;
 	readBmp();
@@ -221,12 +229,13 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 	// Since this class is derived off of MPxCommand, you can use the 
 	// inherited methods to return values and set error messages
 	//
-
+	
 	MayaExporterForER* exporter = new MayaExporterForER;
-	MString filename("D:\\mytest.ess");
+	MString filename("mytest.ess");
 	MFileObject file;
 	file.setRawName(filename);
 
+	exporter->parseArglist(args);
 	exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
 
 	setResult( "MayaExporterForER command executed!\n" );

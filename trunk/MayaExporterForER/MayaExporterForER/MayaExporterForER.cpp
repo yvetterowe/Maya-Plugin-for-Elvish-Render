@@ -269,10 +269,118 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 void MayaExporterForER::outputOptions( ostream& os )
 {
 	os<<"options \"opt\""<<"\n";
-	os<<"\t"<<"samples 0 2"<<"\n";
-	os<<"\t"<<"contrast 0.05 0.05 0.05 0.05"<<"\n";
-	os<<"\t"<<"filter \"gaussian\" 3.0"<<"\n";
+	os<<"\t"<<"contrast "<<opContrast.r<<" "
+						 <<opContrast.g<<" "
+						 <<opContrast.b<<" "
+						 <<opContrast.a<<"\n";
+	os<<"\t"<<"samples "<<opSample.sMin<<" "
+						<<opSample.sMax<<"\n";
+	if(opFilter.fTypeId>0){
+		os<<"\t"<<"filter " <<"\""<<opFilter.fName.asChar()<<"\""<<" "
+			<<opFilter.fSize<<"\n";
+	}
+	os<<"\t"<<"trace_depth "<<opTraceDepth.reflect<<" "
+							<<opTraceDepth.refrect<<" "
+							<<opTraceDepth.sum<<"\n";
+	os<<"\t"<<"globillum "<<opGlobalIllumi<<"\n";
+	os<<"\t"<<"finalgather "<<opFinalGather<<"\n";
 	os<<"end options"<<"\n";
 	os<<"\n";
+}
+
+void MayaExporterForER::setContrast( double r,double g,double b,double a )
+{
+	opContrast.r = r;
+	opContrast.g = g;
+	opContrast.b = b;
+	opContrast.a = a;
+}
+
+void MayaExporterForER::setSample( int sMin,int sMax )
+{
+	opSample.sMin = sMin;
+	opSample.sMax = sMax;
+}
+
+void MayaExporterForER::setFilter( MString t,int s )
+{
+	opFilter.fName = t;
+	opFilter.fSize = s;
+
+	if(t == "none"){
+		opFilter.fTypeId = 0;
+	}
+	else if(t == "box"){
+		opFilter.fTypeId = 1;
+	}
+	else if(t == "triangle"){
+		opFilter.fTypeId = 2;
+	}
+	else if(t == "catmullrom"){
+		opFilter.fTypeId = 3;
+	}
+	else if(t == "gaussian"){
+		opFilter.fTypeId = 4;
+	}
+	else if(t == "sinc"){
+		opFilter.fTypeId = 5;
+	}
+	else{
+		opFilter.fTypeId = -1;
+	}
+}
+
+void MayaExporterForER::setTraceDepth( int tRl,int tRR,int tSum )
+{
+	opTraceDepth.reflect = tRl;
+	opTraceDepth.refrect = tRR;
+	opTraceDepth.sum = tSum;
+}
+
+void MayaExporterForER::setGlobalIllumi( int g )
+{
+	opGlobalIllumi = g;
+}
+
+void MayaExporterForER::setFinalGather( int f )
+{
+	opFinalGather = f;
+}
+
+void MayaExporterForER::parseArglist( const MArgList& args )
+{
+	for(int i = 0;i<args.length();++i)
+	{
+		if(args.asString(i) == "-contrast"){
+			setContrast(args.asDouble(i+1),args.asDouble(i+2),args.asDouble(i+3),args.asDouble(i+4));
+		}
+		else if(args.asString(i) == "-sample"){
+			setSample(args.asInt(i+1),args.asInt(i+2));
+		}
+		else if(args.asString(i) == "-filter"){
+			setFilter(args.asString(i+1),args.asInt(i+2));
+		}
+		else if(args.asString(i) == "-traceDepth"){
+			setTraceDepth(args.asInt(i+1),args.asInt(i+2),args.asInt(i+3));
+			MGlobal::displayInfo(args.asString(i));
+			MGlobal::displayInfo(args.asString(i+1));
+			MGlobal::displayInfo(args.asString(i+2));
+			MGlobal::displayInfo(args.asString(i+3));
+		}
+		else if(args.asString(i) == "-globalIllumi"){
+			setGlobalIllumi(args.asInt(i+1));
+		}
+		else if(args.asString(i) == "-finalGather"){
+			setFinalGather(args.asInt(i+1));
+		}
+		else if(args.asString(i) == "-resolution"){
+		}
+		else if(args.asString(i) == "-gamma"){
+
+		}
+		else{
+			MGlobal::displayInfo("this is not a flag!\n");
+		}
+	}
 }
 
