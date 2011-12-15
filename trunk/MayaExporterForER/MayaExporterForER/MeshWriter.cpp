@@ -55,10 +55,10 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 		return MStatus::kFailure;
 	}
 
-	/*if(MStatus::kFailure == outputNormal(os)) {
+	if(MStatus::kFailure == outputNormal(os)) {
 		MGlobal::displayError("outputNormal");
 		return MStatus::kFailure;
-	}*/
+	}
 
 	if(MStatus::kFailure == outputTriangleVertexIndex(os)) {
 		MGlobal::displayError("outputFaceVertexIndex");

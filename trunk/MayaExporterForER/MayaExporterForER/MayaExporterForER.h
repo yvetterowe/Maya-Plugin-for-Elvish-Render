@@ -48,7 +48,7 @@ private:
 	//set options
 	void					setContrast(double r,double g,double b,double a);
 	void					setSample(int sMin,int sMax);
-	void					setFilter(MString t,int s);
+	void					setFilter(MString t,double s);
 	void					setTraceDepth(int tRl,int tRR,int tSum);
 	void					setGlobalIllumi(int g);
 	void					setFinalGather(int f);

@@ -22,7 +22,8 @@ struct OpSample
 
 struct OpFilter
 {
-	int fTypeId,fSize;
+	int fTypeId;
+	double fSize;
 	MString fName;
 };
 
