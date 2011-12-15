@@ -25,7 +25,7 @@
 
 MayaExporterForER::MayaExporterForER()
 {
-
+	shaders.append("gamma");
 }
 
 MayaExporterForER::~MayaExporterForER()
@@ -112,9 +112,12 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 {
 	MGlobal::displayInfo("begin to export all!");
 	
+
 	MStatus status;
 
+	outputLinks(os);
 	outputOptions(os);
+	outputGammaCorrection(os);
 	
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
@@ -377,11 +380,33 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 		else if(args.asString(i) == "-resolution"){
 		}
 		else if(args.asString(i) == "-gamma"){
-
+			opGamma = args.asDouble(i+1);
 		}
 		else{
 			MGlobal::displayInfo("this is not a flag!\n");
 		}
 	}
+}
+
+void MayaExporterForER::outputGammaCorrection( ostream& os )
+{
+	MGlobal::displayInfo("begin to output gamma!\n");
+	os<<"shader "<<"\"gamma_correction_shader\"\n";
+	os<<"\t"<<"param_string \"desc\" \"gamma_imager\"\n";
+	os<<"\t"<<"param_scalar \"gamma\" "<<StringPrintf("%.2lf\n",opGamma);
+	os<<"end shader\n";
+	os<<"\n";
+	MGlobal::displayInfo("output gamma succeed!\n");
+}
+
+void MayaExporterForER::outputLinks( ostream& os )
+{
+	MGlobal::displayInfo("begin to outputlinks!\n");
+	for(int i = 0;i<shaders.length();++i)
+	{
+		os<<"link "<<"\""<<shaders[i].asChar()<<"\"\n";
+	}
+	os<<"\n";
+	MGlobal::displayInfo("outputlinks succeed!\n");
 }
 
