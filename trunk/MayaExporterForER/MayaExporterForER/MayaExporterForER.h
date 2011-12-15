@@ -34,6 +34,7 @@ public:
 	int						getGloabalIllumi()		{ return opGlobalIllumi;}
 	int						getFinalGather()		{ return opFinalGather;}
 	OpResolution			getResolution()			{ return opResolution;}
+	double					getGamma()              { return opGamma;}
 
 
 private: 
@@ -42,8 +43,11 @@ private:
 	virtual MStatus         processDagNode(const MDagPath dagPath, ostream& os);
 	DagNodeWriter*			createDagNodeWriter(const MDagPath dagPath, MStatus& status);
 
+	//more outputs
 	void					outputRenderConfig(ostream& os);
 	void                    outputOptions(ostream& os);
+	void					outputLinks(ostream& os);
+	void					outputGammaCorrection(ostream& os);
 
 	//set options
 	void					setContrast(double r,double g,double b,double a);
@@ -65,4 +69,9 @@ private:
 	int						opGlobalIllumi;
 	int						opFinalGather;
 	OpResolution			opResolution;
+
+	double					opGamma;
+
+	//more self-defined shaders
+	MStringArray			shaders;
 };

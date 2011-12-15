@@ -46,6 +46,8 @@ global string $gathType;
 global string $resoWidth;
 global string $resoHeight;
 
+global string $gamCorrect;
+
 //ui layout
 window -menuBar true -width 400 -title "Elvish Render";
 
@@ -99,7 +101,7 @@ frameLayout -collapsable true -label "Image Output" -width 400;
 	columnLayout;
 		string $resoWidth = `intFieldGrp -v1 640 -label "Width:"`;
 		string $resoHeight = `intFieldGrp -v1 480 -label "Height:"`;	
-		floatSliderGrp -label "Gamma Correction:" -field true -value 0.0 -precision 1 -minValue 0.0 -maxValue 10.0;	
+		string $gamCorrect = `floatSliderGrp -label "Gamma Correction:" -field true -value 1.00 -precision 2 -minValue 0.01 -maxValue 9.99`;	
 	setParent..;
 setParent..;
 
@@ -158,7 +160,8 @@ global proc setOptions()
 
 	global string $resoWidth;
 	global string $resoHeight;
- 
+
+	global string $gamCorrect;
 
 	//get input field value
 	$cR = `floatFieldGrp -q -v1 $cstR`;
@@ -180,8 +183,9 @@ global proc setOptions()
 
 	$fg = `intFieldGrp -q -v1 $gathType`;
 
-	$rW = `intFieldGrp -q -v1 $resoWidth`;
+	$rW = `intFieldGrp -q -v1 $resoWidth`; 
 	$rH = `intFieldGrp -q -v1 $resoHeight`;
+	$g = `floatSliderGrp -q -v $gamCorrect`;
 	
 	
 	ExportMayaScene -contrast $cR $cG $cB $cA
@@ -190,7 +194,8 @@ global proc setOptions()
 			-traceDepth $tRf $tRr $tS
 			-globalIllumi $il
 			-finalGather $fg
-			-resolution $rW $rH;
-			//-gamma $g
+			-resolution $rW $rH
+			-gamma $g;
+
 	RenderViewWindow;
 }

@@ -3,6 +3,7 @@
 #include "DagNodeWriter.h"
 
 #include <maya/MFnCamera.h>
+#include <maya/MStringArray.h>
 
 class CamaraWriter : public DagNodeWriter
 {
@@ -16,8 +17,11 @@ private:
 
 	//helper methods
 	void outputOutPutConfig(ostream& os);
+
 	MFnCamera*				fCamara;
 	double					fFocal;
 	double					fAperture;
 	double					fAspect;
+	MStringArray            fImagerShaders;
+
 };
