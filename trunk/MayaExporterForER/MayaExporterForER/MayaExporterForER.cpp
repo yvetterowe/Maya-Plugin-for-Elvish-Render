@@ -21,6 +21,9 @@
 #include "MeshWriter.h"
 #include "CamaraWriter.h"
 #include "LightWriter.h"
+#include "SpotLightWriter.h"
+#include "DirectLightWriter.h"
+#include "PointLightWriter.h"
 #include "stringprintf.h"
 
 MayaExporterForER::MayaExporterForER()
@@ -226,22 +229,22 @@ DagNodeWriter* MayaExporterForER::createDagNodeWriter( const MDagPath dagPath, M
 		}
 	case MFn::kPointLight:
 		{
-			return new LightWriter(dagPath,status);
+			return new PointLightWriter(dagPath,status);
 			break;
 		}
 	case MFn::kAreaLight:
 		{
-			return new LightWriter(dagPath,status);
+			return new PointLightWriter(dagPath,status);
 			break;
 		}
 	case MFn::kDirectionalLight:
 		{
-			return new LightWriter(dagPath,status);
+			return new DirectLightWriter(dagPath,status);
 			break;
 		}
 	case MFn::kSpotLight:
 		{
-			return new LightWriter(dagPath,status);
+			return new SpotLightWriter(dagPath,status);
 			break;
 		}
 	default: 

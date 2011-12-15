@@ -4,6 +4,7 @@
 
 #include <maya/MFnLight.h>
 #include <maya/MColor.h>
+#include <maya/MFloatVector.h>
 
 class LightWriter : public DagNodeWriter
 {
@@ -13,10 +14,8 @@ public:
 	virtual MStatus				ExtractInfo();
 	virtual MStatus				WriteToFile(ostream& os);
 
-private:
-	enum LightType {POINT_LIGHT,DIRECTIONAL_LIGHT,AREA_LIGHT,SPOT_LIGHT,TYPE_CNT};
-	MFnLight*					fLight;
-	LightType					fType;
+protected:
 	float                       fIntensity;
 	MColor						fColor;
+	MString						fShaderName;
 };
