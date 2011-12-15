@@ -25,14 +25,24 @@
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
 
+#include <eiAPI\ei.h>
+
 #include <stdio.h>
 #include <math.h>
 #include <fstream>
 #include <Windows.h>
 
 #include "MayaExporterForER.h"
+#include "Render.h"
 
+//#define SAMPLE
+
+#ifdef SAMPLE
+char* PicPathName = "er.frame.0001.bmp";
+#else
 char* PicPathName = "test.bmp";
+#endif
+
 static const char * kDoNotClearBackground		= "-b";
 static const char * kDoNotClearBackgroundLong	= "-background";
 const unsigned int num_side_tiles = 8;
@@ -239,6 +249,19 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 	exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
 
 	setResult( "MayaExporterForER command executed!\n" );
+
+	//render it into image
+	Render render;
+
+#ifdef SAMPLE
+	render.parse("sample.ess");
+	render.overrideOptions(exporter);
+	ei_render("world","caminst1","opt");
+#else
+	render.parse("mytest.ess");
+	//render.overrideOptions(exporter);
+	ei_render("world","instperspShape","opt");
+#endif
 
 	delete exporter;
 

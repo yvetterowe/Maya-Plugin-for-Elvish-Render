@@ -56,6 +56,7 @@ private:
 	void					setTraceDepth(int tRl,int tRR,int tSum);
 	void					setGlobalIllumi(int g);
 	void					setFinalGather(int f);
+	void                    setResolution(int width,int height);
 
 	MStringArray			instanceContainer;
 	MString                 camaraInstance;
