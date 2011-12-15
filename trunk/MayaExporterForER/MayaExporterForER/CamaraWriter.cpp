@@ -45,7 +45,7 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 
 	os<<"camera "<<"\""<<fname.asChar()<<"\""<<"\n";
 	outputOutPutConfig(os);
-	outputTabs(os,1);os<<"add_imager \"gamma_correction_shader\"\n";
+	//outputTabs(os,1);os<<"add_imager \"gamma_correction_shader\"\n";
 	outputTabs(os,1); os<<StringPrintf("focal %.6lf\n",fFocal/10.0);
 	outputTabs(os,1); os<<StringPrintf("aperture %.6lf\n",fAperture*2.54);
 	outputTabs(os,1); os<<StringPrintf("aspect %.6lf\n",fAspect);

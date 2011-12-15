@@ -118,9 +118,9 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 	MStatus status;
 
-	outputLinks(os);
+	//outputLinks(os);
 	outputOptions(os);
-	outputGammaCorrection(os);
+	//outputGammaCorrection(os);
 	
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
@@ -270,7 +270,7 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 	os<<"end instgroup"<<"\n";
 	os<<"\n";
 
-	os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
+	//os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
 }
 
 void MayaExporterForER::outputOptions( ostream& os )
@@ -354,12 +354,21 @@ void MayaExporterForER::setFinalGather( int f )
 	opFinalGather = f;
 }
 
+void MayaExporterForER::setResolution(int w,int h)
+{
+	opResolution.width = w;
+	opResolution.height = h;
+}
+
 void MayaExporterForER::parseArglist( const MArgList& args )
 {
 	for(int i = 0;i<args.length();++i)
 	{
 		if(args.asString(i) == "-contrast"){
 			setContrast(args.asDouble(i+1),args.asDouble(i+2),args.asDouble(i+3),args.asDouble(i+4));
+			//cout<<opContrast.r<<" "<<opContrast.g<<" "<<opContrast.b<<" "<<opContrast.a<<endl;
+			MGlobal::displayInfo(args.asString(i));
+			MGlobal::displayInfo(args.asString(i+1));
 		}
 		else if(args.asString(i) == "-sample"){
 			setSample(args.asInt(i+1),args.asInt(i+2));
@@ -379,8 +388,13 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 		}
 		else if(args.asString(i) == "-finalGather"){
 			setFinalGather(args.asInt(i+1));
+
+			//for test
+			MGlobal::displayInfo(args.asString(i));
+			MGlobal::displayInfo(args.asString(i+1));
 		}
 		else if(args.asString(i) == "-resolution"){
+			setResolution(args.asInt(i+1),args.asInt(i+2));
 		}
 		else if(args.asString(i) == "-gamma"){
 			opGamma = args.asDouble(i+1);
