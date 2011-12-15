@@ -21,6 +21,7 @@
 #include "MeshWriter.h"
 #include "CamaraWriter.h"
 #include "LightWriter.h"
+#include "stringprintf.h"
 
 MayaExporterForER::MayaExporterForER()
 {
@@ -277,7 +278,7 @@ void MayaExporterForER::outputOptions( ostream& os )
 						<<opSample.sMax<<"\n";
 	if(opFilter.fTypeId>0){
 		os<<"\t"<<"filter " <<"\""<<opFilter.fName.asChar()<<"\""<<" "
-			<<opFilter.fSize<<"\n";
+								  <<StringPrintf("%.1lf\n",opFilter.fSize);
 	}
 	os<<"\t"<<"trace_depth "<<opTraceDepth.reflect<<" "
 							<<opTraceDepth.refrect<<" "
@@ -302,7 +303,7 @@ void MayaExporterForER::setSample( int sMin,int sMax )
 	opSample.sMax = sMax;
 }
 
-void MayaExporterForER::setFilter( MString t,int s )
+void MayaExporterForER::setFilter( MString t,double s )
 {
 	opFilter.fName = t;
 	opFilter.fSize = s;
