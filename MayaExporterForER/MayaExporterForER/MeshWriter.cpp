@@ -159,7 +159,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 												   lambertShader.color().r
 												  ,lambertShader.color().g
 												  ,lambertShader.color().b);
-				outputTabs(os,1);os<<StringPrintf("param_vector \"diffuse\" %.6lf %.6lf %.6lf\n",
+				outputTabs(os,1);os<<StringPrintf("param_vector \"Kd\" %.6lf %.6lf %.6lf\n",
 												   lambertShader.diffuseCoeff()
 												  ,lambertShader.diffuseCoeff()
 					                              ,lambertShader.diffuseCoeff());

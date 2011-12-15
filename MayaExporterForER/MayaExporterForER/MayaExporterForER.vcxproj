@@ -86,19 +86,25 @@
   <ItemGroup>
     <ClCompile Include="CamaraWriter.cpp" />
     <ClCompile Include="DagNodeWriter.cpp" />
+    <ClCompile Include="DirectLightWriter.cpp" />
     <ClCompile Include="LightWriter.cpp" />
     <ClCompile Include="MayaExporterForER.cpp" />
     <ClCompile Include="MayaExporterForERCmd.cpp" />
     <ClCompile Include="MeshWriter.cpp" />
+    <ClCompile Include="PointLightWriter.cpp" />
+    <ClCompile Include="SpotLightWriter.cpp" />
     <ClCompile Include="stringprintf.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CamaraWriter.h" />
     <ClInclude Include="DagNodeWriter.h" />
+    <ClInclude Include="DirectLightWriter.h" />
     <ClInclude Include="LightWriter.h" />
     <ClInclude Include="MayaExporterForER.h" />
     <ClInclude Include="MeshWriter.h" />
     <ClInclude Include="OptionType.h" />
+    <ClInclude Include="PointLightWriter.h" />
+    <ClInclude Include="SpotLightWriter.h" />
     <ClInclude Include="stringprintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
