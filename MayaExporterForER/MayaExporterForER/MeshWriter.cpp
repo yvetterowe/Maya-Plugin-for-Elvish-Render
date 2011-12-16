@@ -3,6 +3,8 @@
 
 #include <maya/MItMeshPolygon.h>
 #include <maya/MFnLambertShader.h>
+#include <maya/MFnPhongShader.h>
+#include <maya/MFnPhongEShader.h>
 
 MeshWriter::MeshWriter(MDagPath dagPath, MStatus status): DagNodeWriter(dagPath,status)
 {
@@ -259,6 +261,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 												   lambertShader.diffuseCoeff()
 												  ,lambertShader.diffuseCoeff()
 					                              ,lambertShader.diffuseCoeff());
+				outputTabs(os,1);os<<StringPrintf("param_vector \"Ks\" 0.0\n");
 				os<<"end shader\n";
 				os<<"\n";
 
@@ -291,30 +294,58 @@ MStatus MeshWriter::render_shader()
 
 		for(int j = 0;j<connections.length();++j)
 		{
+			//lambert
 			if(connections[j].node().hasFn(MFn::kLambert)){
 				MGlobal::displayInfo("find lambert shader!\n");
 				MFnLambertShader lambertShader(connections[j].node());
 
 				ei_shader(lambertShader.name().asChar()); 
-				    ei_shader_param_string("desc","plastic"); 
-				    ei_shader_param_vector("Cs",lambertShader.color().r
-										   ,lambertShader.color().g
-										   ,lambertShader.color().b);
-				    ei_shader_param_vector("Kd",  lambertShader.diffuseCoeff()
-												  ,lambertShader.diffuseCoeff()
-					                              ,lambertShader.diffuseCoeff());
+				ei_shader_param_string("desc","plastic"); 
+				ei_shader_param_vector("Cs",lambertShader.color().r
+					,lambertShader.color().g
+					,lambertShader.color().b);
+				ei_shader_param_vector("Kd",  lambertShader.diffuseCoeff()
+					,lambertShader.diffuseCoeff()
+					,lambertShader.diffuseCoeff());
+				ei_shader_param_scalar("Ks",0.0);
 				ei_end_shader();
 
 				fMaterialName = MString("mtl"+lambertShader.name());
 
 				ei_material(fMaterialName.asChar());
-				    ei_add_surface(lambertShader.name().asChar());
+				ei_add_surface(lambertShader.name().asChar());
 				ei_end_material();
-				
+
+			}
+
+			//phong
+			if(connections[j].node().hasFn(MFn::kPhong)){
+				MGlobal::displayInfo("find phong shader!\n");
+				MFnPhongShader phongShader(connections[j].node());
+				ei_shader(phongShader.name().asChar()); 
+				ei_shader_param_string("desc","plastic"); 
+				ei_shader_param_vector("Cs",phongShader.color().r
+					,phongShader.color().g
+					,phongShader.color().b);
+				ei_shader_param_vector("Kd",phongShader.diffuseCoeff()
+					,phongShader.diffuseCoeff()
+					,phongShader.diffuseCoeff());
+				ei_shader_param_scalar("Ks",phongShader.reflectivity());
+				ei_shader_param_scalar("roughness",1.0/phongShader.cosPower());
+				ei_shader_param_vector("specularcolor",phongShader.specularColor().r,
+					phongShader.specularColor().g,
+					phongShader.specularColor().b);
+				ei_end_shader();
+
+				fMaterialName = MString("mtl"+phongShader.name());
+
+				ei_material(fMaterialName.asChar());
+				ei_add_surface(phongShader.name().asChar());
+				ei_end_material();
 			}
 		}
 	}
-	MGlobal::displayInfo("set lambert succeed\n");
+	MGlobal::displayInfo("set material shader succeed\n");
 	return MStatus::kSuccess;
 }
 
