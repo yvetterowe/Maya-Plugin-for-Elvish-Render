@@ -25,7 +25,7 @@ MStatus MeshWriter::ExtractInfo()
 		return MStatus::kFailure;
 	}
 
-	if(MStatus::kFailure == fMesh->/*getNormals(fNormalArray,MSpace::kWorld)*/getVertexNormals(false,fNormalArray,MSpace::kObject)){
+	if(MStatus::kFailure == fMesh->getNormals(fNormalArray,MSpace::kWorld)/*getVertexNormals(false,fNormalArray,MSpace::kObject)*/){
 		MGlobal::displayError("MFnMesh::getNormals");
 		return MStatus::kFailure;
 	}
@@ -78,11 +78,13 @@ MStatus MeshWriter::render()
 	render_shader();
 
 	ei_object(fname.asChar(),"poly");
+	MGlobal::displayInfo("set poly name succeed!\n");
 
 	if(MStatus::kFailure == render_vertex()) {
 		MGlobal::displayError("renderVertex");
 		return MStatus::kFailure;
 	}
+	MGlobal::displayInfo("set poly vertex succeed!\n");
 
 	//normal???
 
@@ -90,9 +92,11 @@ MStatus MeshWriter::render()
 		MGlobal::displayError("renderFaceVertexIndex");
 		return MStatus::kFailure;
 	}
+	MGlobal::displayInfo("set poly triverindex succeed!\n");
 	ei_end_object();
 
 	render_instance(fInstName);
+	MGlobal::displayInfo("set poly iinstance succeed!\n");
 	return MStatus::kSuccess;
 }
 
@@ -120,18 +124,19 @@ MStatus MeshWriter::outputVertex( ostream& os )
 
 MStatus MeshWriter::render_vertex()
 {
+	MGlobal::displayInfo("begin to render vertex\n");
+	
 	int vertexCnt = fVertexArray.length();
 	if(vertexCnt == 0) {
 		return MStatus::kFailure;
 	}
-
 	
-	ei_pos_list(vertexCnt);
+	//ei_pos_list(1024);
+	ei_pos_list(ei_tab(EI_DATA_TYPE_VECTOR, 1024));
+
 	for(int i = 0;i<vertexCnt;++i)
 	{
-		
 		ei_tab_add_vector(fVertexArray[i].x,fVertexArray[i].y,fVertexArray[i].z);
-
 	}
 	ei_end_tab();
 
@@ -141,7 +146,7 @@ MStatus MeshWriter::render_vertex()
 MStatus MeshWriter::outputNormal( ostream& os )
 {
 	MGlobal::displayInfo("begin to output normal!\n");
-	
+
 	int normalCnt = fNormalArray.length();
 	if(normalCnt == 0) {
 		return MStatus::kFailure;
@@ -211,7 +216,9 @@ MStatus MeshWriter::render_triangleVertexIndex()
 		return MStatus::kFailure;
 	}
 
-	ei_triangle_list(indexCnt);
+	//ei_triangle_list(indexCnt);
+	ei_triangle_list(ei_tab(EI_DATA_TYPE_VECTOR, 1024));
+
 	for(int i = 0;i<=indexCnt-3;i+=3)
 	{
 		ei_tab_add_index(fFaceTriangleVertexArray[i]);
@@ -285,10 +292,11 @@ MStatus MeshWriter::render_shader()
 		for(int j = 0;j<connections.length();++j)
 		{
 			if(connections[j].node().hasFn(MFn::kLambert)){
+				MGlobal::displayInfo("find lambert shader!\n");
 				MFnLambertShader lambertShader(connections[j].node());
 
-				ei_shader(lambertShader.name().asChar());
-				    ei_shader_param_string("desc","plastic");
+				ei_shader(lambertShader.name().asChar()); 
+				    ei_shader_param_string("desc","plastic"); 
 				    ei_shader_param_vector("Cs",lambertShader.color().r
 										   ,lambertShader.color().g
 										   ,lambertShader.color().b);
@@ -306,6 +314,7 @@ MStatus MeshWriter::render_shader()
 			}
 		}
 	}
+	MGlobal::displayInfo("set lambert succeed\n");
 	return MStatus::kSuccess;
 }
 
