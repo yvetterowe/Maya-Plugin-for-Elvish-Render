@@ -4,6 +4,8 @@
 #include <maya/MStringArray.h>
 #include <maya/MArgList.h>
 
+#include<eiAPI\ei.h>
+
 #include "OptionType.h"
 
 class MDagPath;
@@ -25,6 +27,9 @@ public:
 	MString                 defaultExtension() const;
 
 	void					parseArglist( const MArgList& args );
+
+	//render
+	void                    render();
 
 	//get options
 	OpContrast				getContrast()			{ return opContrast;}
@@ -58,6 +63,15 @@ private:
 	void					setFinalGather(int f);
 	void                    setResolution(int width,int height);
 
+	//render embaded
+	void                    render_createScene();
+	void                    render_setOptions();
+	void                    render_setConfigure();
+	void                    render_setLinks();
+	void                    render_setGammaCorrection();
+	void                    render_override();
+	
+
 	MStringArray			instanceContainer;
 	MString                 camaraInstance;
 	MString					option;
@@ -75,4 +89,9 @@ private:
 
 	//more self-defined shaders
 	MStringArray			shaders;
+
+	//current dir
+	//char cur_dir[EI_MAX_FILE_NAME_LEN];
+
+	
 };

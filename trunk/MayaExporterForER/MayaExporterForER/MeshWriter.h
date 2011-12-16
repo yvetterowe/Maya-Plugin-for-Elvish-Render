@@ -8,6 +8,8 @@
 #include <maya/MFloatArray.h>
 #include <maya/MIntArray.h>
 
+#include <eiAPI\ei.h>
+
 class MeshWriter : public DagNodeWriter
 {
 public:
@@ -17,6 +19,8 @@ public:
 	virtual MStatus			ExtractInfo();
 	virtual MStatus			WriteToFile(ostream& os);
 	virtual void			outputInstance(ostream&os,MString instName);
+	virtual MStatus         render();
+	virtual void            render_instance(MString instName);
 
 private:
 	MFnMesh*				fMesh;
@@ -33,4 +37,10 @@ private:
 	MStatus					outputNormal(ostream& os);
 	MStatus					outputTriangleVertexIndex(ostream& os);
 	MStatus					outputShader(ostream& os);
+
+	//render
+	MStatus                 render_shader();
+	MStatus                 render_vertex();
+	MStatus                 render_normal();
+	MStatus                 render_triangleVertexIndex();
 };

@@ -12,11 +12,15 @@ public:
 	virtual ~CamaraWriter();
 	virtual MStatus			ExtractInfo();
 	virtual MStatus			WriteToFile(ostream& os);
+	virtual MStatus         render();
 
 private:
 
 	//helper methods
 	void outputOutPutConfig(ostream& os);
+
+	//render
+	void render_configure();
 
 	MFnCamera*				fCamara;
 	double					fFocal;

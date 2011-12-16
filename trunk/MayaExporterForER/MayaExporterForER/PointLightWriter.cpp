@@ -58,3 +58,13 @@ MStatus PointLightWriter::WriteToFile( ostream& os )
 	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
 }
+
+MStatus PointLightWriter::render()
+{
+	ei_shader(fShaderName.asChar());
+	   ei_shader_param_string("desc","pointlight");
+	   ei_shader_param_scalar("intensity",fIntensity);
+	   ei_shader_param_vector("lightcolor",fColor.r,fColor.g,fColor.b);
+	ei_end_shader();
+	return MStatus::kSuccess;
+}

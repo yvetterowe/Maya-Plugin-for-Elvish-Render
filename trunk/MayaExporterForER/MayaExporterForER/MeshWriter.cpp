@@ -71,6 +71,33 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 	return MStatus::kSuccess;
 }
 
+MStatus MeshWriter::render()
+{
+	MGlobal::displayInfo("render mesh!\n");
+	
+	render_shader();
+
+	ei_object(fname.asChar(),"poly");
+
+	if(MStatus::kFailure == render_vertex()) {
+		MGlobal::displayError("renderVertex");
+		return MStatus::kFailure;
+	}
+
+	//normal???
+
+	if(MStatus::kFailure == render_triangleVertexIndex()) {
+		MGlobal::displayError("renderFaceVertexIndex");
+		return MStatus::kFailure;
+	}
+	ei_end_object();
+
+	render_instance(fInstName);
+	return MStatus::kSuccess;
+}
+
+
+
 MStatus MeshWriter::outputVertex( ostream& os )
 {
 	MGlobal::displayInfo("begin to output vertex!\n");
@@ -87,6 +114,26 @@ MStatus MeshWriter::outputVertex( ostream& os )
 		outputTabs(os,1);
 		os<<StringPrintf("%.6lf %.6lf %.6lf\n",fVertexArray[i].x,fVertexArray[i].y,fVertexArray[i].z);	
 	}
+
+	return MStatus::kSuccess;
+}
+
+MStatus MeshWriter::render_vertex()
+{
+	int vertexCnt = fVertexArray.length();
+	if(vertexCnt == 0) {
+		return MStatus::kFailure;
+	}
+
+	
+	ei_pos_list(vertexCnt);
+	for(int i = 0;i<vertexCnt;++i)
+	{
+		
+		ei_tab_add_vector(fVertexArray[i].x,fVertexArray[i].y,fVertexArray[i].z);
+
+	}
+	ei_end_tab();
 
 	return MStatus::kSuccess;
 }
@@ -112,6 +159,26 @@ MStatus MeshWriter::outputNormal( ostream& os )
 	return MStatus::kSuccess;
 }
 
+MStatus MeshWriter::render_normal()
+{
+	MGlobal::displayInfo("begin to render normal!\n");
+	
+	int normalCnt = fNormalArray.length();
+	if(normalCnt == 0) {
+		return MStatus::kFailure;
+	}
+
+	//os<<"nrm_list "<<normalCnt<<"\n";
+	
+	for(int i = 0;i<normalCnt;++i)
+	{
+		//outputTabs(os,1);
+		//os<<StringPrintf("%.6lf %.6lf %.6lf\n",fNormalArray[i].x,fNormalArray[i].y,fNormalArray[i].z);	
+	}
+
+	return MStatus::kSuccess;
+}
+
 MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
 {
 	MGlobal::displayInfo("begin to output triangleindex!\n");
@@ -131,6 +198,28 @@ MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
 		  <<fFaceTriangleVertexArray[i+1]<<" "
 		  <<fFaceTriangleVertexArray[i+2]<<"\n";
 	}
+
+	return MStatus::kSuccess;
+}
+
+MStatus MeshWriter::render_triangleVertexIndex()
+{
+	MGlobal::displayInfo("begin to render triangleindex!\n");
+	
+	int indexCnt = fFaceTriangleVertexArray.length();
+	if(indexCnt == 0) {
+		return MStatus::kFailure;
+	}
+
+	ei_triangle_list(indexCnt);
+	for(int i = 0;i<=indexCnt-3;i+=3)
+	{
+		ei_tab_add_index(fFaceTriangleVertexArray[i]);
+		ei_tab_add_index(fFaceTriangleVertexArray[i+1]);
+		ei_tab_add_index(fFaceTriangleVertexArray[i+2]);
+
+	}
+	ei_end_tab();
 
 	return MStatus::kSuccess;
 }
@@ -179,6 +268,47 @@ MStatus MeshWriter::outputShader( ostream& os )
 	return MStatus::kSuccess;
 }
 
+MStatus MeshWriter::render_shader()
+{
+	MGlobal::displayInfo("begin to render shaders!\n");
+	if(fShaderArray.length() == 0){
+		return MStatus::kFailure;
+	}
+
+	for(int i = 0;i<fShaderArray.length();++i)
+	{
+		MPlugArray connections;
+		MFnDependencyNode shaderGroup(fShaderArray[i]);
+		MPlug shaderPlug = shaderGroup.findPlug("surfaceShader");
+		shaderPlug.connectedTo(connections,true,false);
+
+		for(int j = 0;j<connections.length();++j)
+		{
+			if(connections[j].node().hasFn(MFn::kLambert)){
+				MFnLambertShader lambertShader(connections[j].node());
+
+				ei_shader(lambertShader.name().asChar());
+				    ei_shader_param_string("desc","plastic");
+				    ei_shader_param_vector("Cs",lambertShader.color().r
+										   ,lambertShader.color().g
+										   ,lambertShader.color().b);
+				    ei_shader_param_vector("Kd",  lambertShader.diffuseCoeff()
+												  ,lambertShader.diffuseCoeff()
+					                              ,lambertShader.diffuseCoeff());
+				ei_end_shader();
+
+				fMaterialName = MString("mtl"+lambertShader.name());
+
+				ei_material(fMaterialName.asChar());
+				    ei_add_surface(lambertShader.name().asChar());
+				ei_end_material();
+				
+			}
+		}
+	}
+	return MStatus::kSuccess;
+}
+
 void MeshWriter::outputInstance( ostream&os,MString instName )
 {
 	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
@@ -187,4 +317,14 @@ void MeshWriter::outputInstance( ostream&os,MString instName )
 	outputTabs(os,1); outputTransform(os);
 	os<<"end instance"<<"\n";
 	os<<"\n";
+}
+
+void MeshWriter::render_instance(MString instName)
+{
+	ei_instance(instName.asChar());
+	    ei_element(fname.asChar());
+		ei_add_material(fMaterialName.asChar());
+		render_transform();
+	ei_end_instance();
+
 }

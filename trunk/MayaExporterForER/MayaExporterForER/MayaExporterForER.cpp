@@ -118,10 +118,13 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 	MStatus status;
 
-	//outputLinks(os);
+	outputLinks(os);
 	outputOptions(os);
-	//outputGammaCorrection(os);
+	outputGammaCorrection(os);
 	
+	render_createScene();
+	render_setOptions();
+
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
 	if (MStatus::kFailure == status) {
@@ -170,7 +173,9 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 		}
 	}
 	outputRenderConfig(os);
+	render_setConfigure();
 
+	//ei_render("world",camaraInstance.asChar(),"opt");
 	return MStatus::kSuccess;
 }
 
@@ -206,6 +211,12 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 		MGlobal::displayError("write to file fail!");
 		delete pWriter;
 		return MStatus::kFailure;
+	}
+	if (MStatus::kFailure == pWriter->render()){
+		MGlobal::displayError("render fail!");
+		delete pWriter;
+		return MStatus::kFailure;
+	
 	}
 
 	delete pWriter;
@@ -271,6 +282,50 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 	os<<"\n";
 
 	//os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
+}
+
+void MayaExporterForER::render()
+{
+	//render_override();
+	ei_render("world",camaraInstance.asChar(),"opt");
+	ei_delete_context(ei_context(NULL));
+}
+
+void MayaExporterForER::render_override()
+{
+		ei_options("opt");
+
+	ei_contrast(opContrast.r,opContrast.g,opContrast.b,opContrast.a);
+
+
+	ei_samples(opSample.sMin,opSample.sMax);
+
+	if(opFilter.fTypeId && opFilter.fTypeId!=-1)
+		ei_filter(opFilter.fTypeId,opFilter.fSize);
+
+	
+	ei_trace_depth(opTraceDepth.reflect,opTraceDepth.refrect,opTraceDepth.sum);
+
+	ei_globillum(opGlobalIllumi);
+
+	ei_finalgather(opFinalGather);
+	ei_end_options();
+
+	//ei_camera("instperspShape");
+	//ei_resolution(opResolution.width,opResolution.height);
+	//ei_end_camera();
+
+	
+}
+
+void MayaExporterForER::render_setConfigure()
+{
+	ei_instgroup("world");
+	for(int i = 0;i<instanceContainer.length();++i)
+	{
+		ei_add_instance(instanceContainer[i].asChar());
+	}
+	ei_instgroup("world");
 }
 
 void MayaExporterForER::outputOptions( ostream& os )
@@ -366,7 +421,6 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 	{
 		if(args.asString(i) == "-contrast"){
 			setContrast(args.asDouble(i+1),args.asDouble(i+2),args.asDouble(i+3),args.asDouble(i+4));
-			//cout<<opContrast.r<<" "<<opContrast.g<<" "<<opContrast.b<<" "<<opContrast.a<<endl;
 			MGlobal::displayInfo(args.asString(i));
 			MGlobal::displayInfo(args.asString(i+1));
 		}
@@ -416,6 +470,11 @@ void MayaExporterForER::outputGammaCorrection( ostream& os )
 	MGlobal::displayInfo("output gamma succeed!\n");
 }
 
+void MayaExporterForER::render_setGammaCorrection()
+{
+	//???
+}
+
 void MayaExporterForER::outputLinks( ostream& os )
 {
 	MGlobal::displayInfo("begin to outputlinks!\n");
@@ -426,4 +485,41 @@ void MayaExporterForER::outputLinks( ostream& os )
 	os<<"\n";
 	MGlobal::displayInfo("outputlinks succeed!\n");
 }
+
+void MayaExporterForER::render_setLinks()
+{
+	for(int i = 0;i<shaders.length();++i)
+	{
+		ei_link(shaders[i].asChar());
+	}
+}
+
+void MayaExporterForER::render_createScene()
+{
+	char	cur_dir[ EI_MAX_FILE_NAME_LEN ];
+	char	output_filename[ EI_MAX_FILE_NAME_LEN ];
+
+	ei_get_current_directory(cur_dir);
+
+	ei_context(ei_create_context());
+
+	ei_verbose(EI_VERBOSE_ALL);
+	ei_link("eiIMG");
+	ei_link("eiSHADER");
+}
+
+void MayaExporterForER::render_setOptions()
+{
+	ei_options("opt");
+	    ei_contrast(opContrast.r, opContrast.g, opContrast.b, opContrast.a);
+		ei_samples(opSample.sMin, opSample.sMax);
+		if(opFilter.fTypeId>0)
+			ei_filter(opFilter.fTypeId, opFilter.fSize);
+		ei_trace_depth(opTraceDepth.reflect,opTraceDepth.refrect,opTraceDepth.sum);
+		ei_globillum(opGlobalIllumi);
+		ei_finalgather(opFinalGather);
+	ei_end_options();
+}
+
+
 

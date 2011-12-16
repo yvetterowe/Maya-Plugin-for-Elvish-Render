@@ -1,6 +1,7 @@
 #include "CamaraWriter.h"
 #include "stringprintf.h"
 
+
 CamaraWriter::CamaraWriter(MDagPath dagPath, MStatus status) : DagNodeWriter(dagPath,status)
 {
 	fCamara = new MFnCamera(dagPath,&status);
@@ -58,9 +59,45 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 	return MStatus::kSuccess;
 }
 
+MStatus CamaraWriter::render()
+{MGlobal::displayInfo("render camera !\n");
+
+	ei_camera(fname.asChar());
+
+	//outputOutPutConfig(os);
+	render_configure();
+	//os<<"add_imager \"gamma_correction_shader\"\n";
+	 
+	
+	ei_focal(fFocal/10.0);
+	ei_aperture(fAperture*2.54);
+	ei_aspect(fAspect);
+	ei_resolution(640,480);
+
+	ei_end_camera();
+
+	render_instance(fInstName);
+
+	return MStatus::kSuccess;
+
+}
+
 void CamaraWriter::outputOutPutConfig( ostream& os )
 {
 	outputTabs(os,1); os<<"output "<<"\"test.bmp\" \"bmp\" \"rgb\""<<"\n";
 	outputTabs(os,2); os<<"output_variable \"color\" \"vector\""<<"\n";
 	outputTabs(os,1); os<<"end output"<<"\n";
+}
+
+void CamaraWriter::render_configure()
+{
+	char	cur_dir[ EI_MAX_FILE_NAME_LEN ];
+	char	output_filename[ EI_MAX_FILE_NAME_LEN ];
+	ei_get_current_directory(cur_dir);
+
+
+	ei_append_filename(output_filename,cur_dir, "frame01.bmp");
+	ei_output("test.bmp","bmp", EI_IMG_DATA_RGB);
+	ei_output_variable("color", EI_DATA_TYPE_VECTOR);
+	ei_end_output();
 }

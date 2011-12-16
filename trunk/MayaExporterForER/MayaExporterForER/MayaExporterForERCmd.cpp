@@ -247,6 +247,7 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 
 	exporter->parseArglist(args);
 	exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
+	
 
 	setResult( "MayaExporterForER command executed!\n" );
 
@@ -257,10 +258,11 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 	render.parse("sample.ess");
 	render.overrideOptions(exporter);
 	ei_render("world","caminst1","opt");
-#else
-	render.parse("mytest.ess");
+	//render.parse("mytest.ess");
 	//render.overrideOptions(exporter);
-	ei_render("world","instperspShape","opt");
+	//ei_render("world","instperspShape","opt");
+#else
+	exporter->render();
 #endif
 
 	delete exporter;

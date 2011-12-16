@@ -6,6 +6,8 @@
 #include <maya/MColor.h>
 #include <maya/MFloatVector.h>
 
+#include<eiAPI\ei.h>
+
 class LightWriter : public DagNodeWriter
 {
 public:
@@ -13,6 +15,8 @@ public:
 	virtual ~LightWriter();
 	virtual MStatus				ExtractInfo();
 	virtual MStatus				WriteToFile(ostream& os);
+
+	virtual MStatus             render();
 
 protected:
 	float                       fIntensity;

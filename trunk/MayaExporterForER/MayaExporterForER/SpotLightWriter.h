@@ -10,6 +10,7 @@ public:
 	virtual ~SpotLightWriter();
 	virtual MStatus				ExtractInfo();
 	virtual MStatus				WriteToFile(ostream& os);
+	virtual MStatus             render();
 
 private:
 	MFnSpotLight*				fSpotLight;
