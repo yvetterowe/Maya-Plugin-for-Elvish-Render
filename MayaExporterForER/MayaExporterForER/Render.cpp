@@ -30,9 +30,29 @@ void Render::overrideOptions(MayaExporterForER* exporter)
 	int finalGather = exporter->getFinalGather();
 	ei_finalgather(finalGather);
 	
-	//OpResolution resolution = exporter->getResolution();
-	//ei_resolution(resolution.width,resolution.height);
+	OpResolution resolution = exporter->getResolution();
+	ei_resolution(resolution.width,resolution.height);
 
 	ei_end_options();
+
+}
+
+void Render::createScene()
+{
+	char	cur_dir[ EI_MAX_FILE_NAME_LEN ];
+	char	output_filename[ EI_MAX_FILE_NAME_LEN ];
+
+	ei_get_current_directory(cur_dir);
+
+	ei_context(ei_create_context());
+
+	ei_verbose(EI_VERBOSE_ALL);
+	ei_link("eiIMG");
+	ei_link("eiSHADER");
+}
+
+void Render::setOptions()
+{
+
 
 }

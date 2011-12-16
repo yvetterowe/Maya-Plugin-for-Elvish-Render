@@ -72,3 +72,29 @@ MStatus SpotLightWriter::WriteToFile( ostream& os )
 	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
 }
+
+MStatus SpotLightWriter::render()
+{
+	MGlobal::displayInfo("render spotlight!\n");
+
+	//light_shader
+	ei_shader(fShaderName.asChar());
+	    ei_shader_param_string("desc","spotlight");
+		ei_shader_param_scalar("intensity",fIntensity);
+		ei_shader_param_vector("lightcolor",fColor.r,fColor.g,fColor.b);
+		ei_shader_param_vector("direction",fDirection.x,fDirection.y,fDirection.z);
+		ei_shader_param_scalar("spread",fSpread);
+		ei_shader_param_scalar("deltaangle",fDeltaAngle);
+	ei_end_shader();
+	
+
+	//light
+	ei_light(fname.asChar());
+	    ei_add_light(fShaderName.asChar());
+	    ei_origin(0.0,0.0,0.0);
+	ei_end_light();
+	
+
+	render_instance(fInstName);
+	return MStatus::kSuccess;
+}

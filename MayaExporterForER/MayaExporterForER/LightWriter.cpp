@@ -18,3 +18,8 @@ MStatus LightWriter::WriteToFile( ostream& os )
 {
 	return MStatus::kSuccess;
 }
+
+MStatus LightWriter::render()
+{
+	return MStatus::kSuccess;
+}

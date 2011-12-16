@@ -11,6 +11,7 @@ public:
 	virtual ~DirectLightWriter();
 	virtual MStatus				ExtractInfo();
 	virtual MStatus				WriteToFile(ostream& os);
+	virtual MStatus             render();
 
 private:
 	MFnDirectionalLight*		fDirectLight;
