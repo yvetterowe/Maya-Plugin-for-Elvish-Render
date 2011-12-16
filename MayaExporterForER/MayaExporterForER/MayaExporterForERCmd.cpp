@@ -41,6 +41,8 @@
 char* PicPathName = "er.frame.0001.bmp";
 #else
 char* PicPathName = "test.bmp";
+//char* PicPathName = "C:\\Users\\lenovo\\code\\cg\\ElvishRenderer\\build\\r990\\x86\\test.bmp";
+//char* PicPathName = "lenna.bmp";
 #endif
 
 static const char * kDoNotClearBackground		= "-b";
@@ -288,4 +290,4 @@ MStatus uninitializePlugin( MObject obj ) {
 	MFnPlugin plugin( obj );
 	plugin.deregisterCommand( "ExportMayaScene" );
 	return MS::kSuccess;
-}
+}   

@@ -83,8 +83,8 @@
       <AdditionalOptions>/GR /GS /Gm /EHac /ZI /I "." /D "WIN32" /D "_DEBUG"  /RTC1 /c %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;OpenMayaUI.lib;OpenMayaAnim.lib;odbc32.lib;odbccp32.lib;OpenMayaRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Foundation.lib;OpenMaya.lib;OpenMayaUI.lib;OpenMayaAnim.lib;odbc32.lib;odbccp32.lib;OpenMayaRender.lib;eiAPI.lib;eiCORE.lib;eiIMG.lib;eiShADER.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Debug\lib;.\Debug\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>Debug\MayaExporterForER.mll</OutputFile>
       <ImportLibrary>Debug/MayaExporterForER.lib</ImportLibrary>
       <ProgramDatabaseFile>Debug/MayaExporterForER.pdb</ProgramDatabaseFile>

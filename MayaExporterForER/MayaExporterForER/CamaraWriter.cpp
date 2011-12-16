@@ -98,6 +98,7 @@ void CamaraWriter::render_configure()
 
 	ei_append_filename(output_filename,cur_dir, "frame01.bmp");
 	ei_output("test.bmp","bmp", EI_IMG_DATA_RGB);
+	//ei_output("C:\\Users\\lenovo\\code\\cg\\ElvishRenderer\\build\\r990\\x86\\test.bmp","bmp",EI_IMG_DATA_RGB);
 	ei_output_variable("color", EI_DATA_TYPE_VECTOR);
 	ei_end_output();
 }
