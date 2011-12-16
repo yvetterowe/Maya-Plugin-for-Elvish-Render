@@ -70,31 +70,37 @@ setParent..;
 
 frameLayout -collapsable true -label "Filter" -width 400;
 	columnLayout -columnAlign "center";
-		string $filType = `optionMenu -label "Type"`;
+		string $filType = `optionMenuGrp -label "Type"`;
 			menuItem -label "none";
 			menuItem -label "box";
 			menuItem -label "triangle";
 			menuItem -label "catmullrom";
 			menuItem -label "gaussian";
 			menuItem -label "sinc";
-		string $filSize = `floatFieldGrp -v1 0 -precision 1 -label "Size:"`;
+		string $filSize = `floatFieldGrp -v1 3.0 -precision 1 -label "Size:"`;
 	setParent..;
 setParent..;
 
 frameLayout -collapsable true -label "Trace Depth" -width 400;
 	columnLayout;
-		string $trcRel = `intFieldGrp -v1 6 -label "Reflect:"`;
-		string $trcRer = `intFieldGrp -v1 6 -label "Refrect:"`;
-		string $trcSum = `intFieldGrp -v1 6 -label "Sum:"`;
+		string $trcRel = `intFieldGrp -v1 0 -label "Reflect:"`;
+		string $trcRer = `intFieldGrp -v1 0 -label "Refrect:"`;
+		string $trcSum = `intFieldGrp -v1 0 -label "Sum:"`;
 	setParent..;
 setParent..;
 
 frameLayout -collapsable true -label "Global Illumination" -width 400;
-	string $illuType = `intFieldGrp -v1 0 -label "Type:"`;
+	columnLayout;
+		string $illuType = `checkBoxGrp -label1 "Enable global illumination"
+										-adjustableColumn true`;
+	setParent;
 setParent..;
 
 frameLayout -collapsable true -label "Final Gather" -width 400;
-	string $gathType = `intFieldGrp -v1 0 -label "Type:"`;
+	columnLayout;
+		string $gathType = `checkBoxGrp -label1 "Enable final gather"
+										-adjustableColumn true`;
+	setParent;
 setParent..;
 
 frameLayout -collapsable true -label "Image Output" -width 400;
@@ -105,7 +111,8 @@ frameLayout -collapsable true -label "Image Output" -width 400;
 	setParent..;
 setParent..;
 
-button -label "Done" -command "setOptions";
+columnLayout -adjustableColumn true;
+	button -label "Done" -command "setOptions" -width 100;
 setParent..;
 
 showWindow;
@@ -172,16 +179,16 @@ global proc setOptions()
 	$spMin = `intFieldGrp -q -v1 $splMin`;
 	$spMax = `intFieldGrp -q -v1 $splMax`;
 	
-	$fName = `optionMenu -q -v $filType`;
+	$fName = `optionMenuGrp -q -v $filType`;
 	$fSize = `floatFieldGrp -q -v1 $filSize`;
 
 	$tRf = `intFieldGrp -q -v1 $trcRel`;
 	$tRr = `intFieldGrp -q -v1 $trcRer`;
 	$tS = `intFieldGrp -q -v1 $trcSum`;
 
-	$il = `intFieldGrp -q -v1 $illuType`;
+	$il = `checkBoxGrp -q -v1 $illuType`;
 
-	$fg = `intFieldGrp -q -v1 $gathType`;
+	$fg = `checkBoxGrp -q -v1 $gathType`;
 
 	$rW = `intFieldGrp -q -v1 $resoWidth`; 
 	$rH = `intFieldGrp -q -v1 $resoHeight`;
