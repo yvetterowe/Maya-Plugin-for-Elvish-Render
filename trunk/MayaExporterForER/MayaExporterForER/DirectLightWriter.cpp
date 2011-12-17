@@ -85,7 +85,7 @@ MStatus DirectLightWriter::render()
 	//light
 	ei_light(fname.asChar());
 	    ei_add_light(fShaderName.asChar());
-	    ei_origin(0.0,0.0,0.0);
+	    ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
 	ei_end_light();
 
 	render_instance(fInstName);
