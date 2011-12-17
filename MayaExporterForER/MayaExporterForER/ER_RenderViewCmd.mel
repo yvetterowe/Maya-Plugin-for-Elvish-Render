@@ -91,15 +91,13 @@ setParent..;
 
 frameLayout -collapsable true -label "Global Illumination" -width 400;
 	columnLayout;
-		string $illuType = `checkBoxGrp -label1 "Enable global illumination"
-										-adjustableColumn true`;
+		string $illuType = `checkBoxGrp -l "Enable global illumination"`;
 	setParent;
 setParent..;
 
 frameLayout -collapsable true -label "Final Gather" -width 400;
 	columnLayout;
-		string $gathType = `checkBoxGrp -label1 "Enable final gather"
-										-adjustableColumn true`;
+		string $gathType = `checkBoxGrp -l "Enable final gather"`;
 	setParent;
 setParent..;
 

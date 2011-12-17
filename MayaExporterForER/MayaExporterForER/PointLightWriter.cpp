@@ -51,7 +51,9 @@ MStatus PointLightWriter::WriteToFile( ostream& os )
 	//light
 	os<<"light "<<"\""<<fname.asChar()<<"\"\n";
 	outputTabs(os,1); os<<"add_light "<<"\""<<fShaderName.asChar()<<"\"\n";
-	outputTabs(os,1); os<<"origin 0.0 0.0 0.0\n";
+	outputTabs(os,1); os<<"origin "<<fTranslation.x<<" "
+								   <<fTranslation.y<<" "
+								   <<fTranslation.z<<"\n";
 	os<<"end light\n";
 	os<<"\n";
 
@@ -71,7 +73,7 @@ MStatus PointLightWriter::render()
 
 	ei_light(fname.asChar());
 	ei_add_light(fShaderName.asChar());
-	ei_origin(0.0,0.0,0.0);
+	ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
 	ei_end_light();
 
 	render_instance(fInstName);

@@ -14,7 +14,7 @@ DagNodeWriter::DagNodeWriter(MDagPath dagPath, MStatus status)
 
 	MFnTransform transForm = MFnTransform(node.parent(0));
 	fTransMat = transForm.transformation().asMatrix();
-	//fTransMat = node.transformationMatrix();
+	fTranslation = transForm.getTranslation(MSpace::kObject);
 }
 
 DagNodeWriter::~DagNodeWriter()
@@ -58,7 +58,6 @@ void DagNodeWriter::outputTransform( ostream& os )
 	{
 		for(int j = 0;j<4;++j)
 		{
-			//os<<fTransMat(i,j)<<" ";
 			os<<StringPrintf("%.6lf ",fTransMat(i,j));
 		}
 	}

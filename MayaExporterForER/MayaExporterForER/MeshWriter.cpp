@@ -285,6 +285,11 @@ MStatus MeshWriter::render_shader()
 		return MStatus::kFailure;
 	}
 
+	//shadow shader
+	ei_shader("opaque_shadow");
+		ei_shader_param_string("desc","opaque");
+	ei_end_shader();
+
 	for(int i = 0;i<fShaderArray.length();++i)
 	{
 		MPlugArray connections;
@@ -313,7 +318,8 @@ MStatus MeshWriter::render_shader()
 				fMaterialName = MString("mtl"+lambertShader.name());
 
 				ei_material(fMaterialName.asChar());
-				ei_add_surface(lambertShader.name().asChar());
+					ei_add_surface(lambertShader.name().asChar());
+					ei_add_shadow("opaque_shadow");
 				ei_end_material();
 
 			}
@@ -340,7 +346,8 @@ MStatus MeshWriter::render_shader()
 				fMaterialName = MString("mtl"+phongShader.name());
 
 				ei_material(fMaterialName.asChar());
-				ei_add_surface(phongShader.name().asChar());
+					ei_add_surface(phongShader.name().asChar());
+					ei_add_shadow("opaque_shadow");
 				ei_end_material();
 			}
 		}
