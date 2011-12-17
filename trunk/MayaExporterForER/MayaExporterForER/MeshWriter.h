@@ -24,6 +24,7 @@ public:
 
 private:
 	MFnMesh*				fMesh;
+	MDagPath                fPath;
 	MPointArray				fVertexArray;
 	MFloatVectorArray		fNormalArray;
 	MIntArray				fFaceTriangleCntArray;
