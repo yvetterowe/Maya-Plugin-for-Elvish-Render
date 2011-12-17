@@ -39,9 +39,11 @@ MStatus SpotLightWriter::ExtractInfo()
 		return MStatus::kFailure;
 	}
 
-	fSpread = 1000.0;
+	fSpread = fSpotLight->coneAngle()*0.5;
 
-	fDeltaAngle = fSpotLight->coneAngle();//*myPI/180.0;
+	//fDeltaAngle = (fSpotLight->coneAngle()-fSpotLight->penumbraAngle())*0.25;
+
+	//fDeltaAngle = fSpotLight->coneAngle();//*myPI/180.0;
 
 	return MStatus::kSuccess;
 }
@@ -84,14 +86,15 @@ MStatus SpotLightWriter::render()
 		ei_shader_param_vector("lightcolor",fColor.r,fColor.g,fColor.b);
 		ei_shader_param_vector("direction",fDirection.x,fDirection.y,fDirection.z);
 		ei_shader_param_scalar("spread",fSpread);
-		ei_shader_param_scalar("deltaangle",fDeltaAngle);
+		//ei_shader_param_scalar("deltaangle",fDeltaAngle);
 	ei_end_shader();
 	
 
 	//light
 	ei_light(fname.asChar());
 	    ei_add_light(fShaderName.asChar());
-	    ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
+	    //ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
+		ei_origin(0.0,0.0,0.0);
 	ei_end_light();
 	
 
