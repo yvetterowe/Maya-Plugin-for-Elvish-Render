@@ -6,6 +6,7 @@
 #include <maya/MDagPath.h>
 #include <maya/MItDependencyGraph.h>
 #include <maya/MMatrix.h>
+#include <maya/MTransformationMatrix.h>
 #include <maya/MVector.h>
 
 #include <eiAPI\ei.h>
@@ -38,6 +39,7 @@ protected:
 	MDagPath*				fpath;
 	MString					fname;
 	MString					fInstName;
+	MTransformationMatrix   fTransmatOrigin;
 	MMatrix					fTransMat;
 	MVector					fTranslation;
 };

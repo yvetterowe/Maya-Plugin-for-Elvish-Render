@@ -13,6 +13,7 @@ DagNodeWriter::DagNodeWriter(MDagPath dagPath, MStatus status)
 	MFnDagNode node(dagPath);
 
 	MFnTransform transForm = MFnTransform(node.parent(0));
+	fTransmatOrigin = transForm.transformation();
 	fTransMat = transForm.transformation().asMatrix();
 	fTranslation = transForm.getTranslation(MSpace::kObject);
 }
