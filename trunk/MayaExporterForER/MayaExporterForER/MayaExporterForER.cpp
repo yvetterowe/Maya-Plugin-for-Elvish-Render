@@ -148,7 +148,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 		}		
 	}
 
-	//for default perspective camera
+	//for renderable camera
 	MItDag itCamera(MItDag::kDepthFirst, MFn::kCamera, &status);
 
 	if (MStatus::kFailure == status) {
@@ -159,17 +159,20 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	for(;!itCamera.isDone();itCamera.next()) 
 	{
 		MFnCamera cam(itCamera.item());
-		if(cam.name()== "perspShape"){
-			MGlobal::displayInfo("find persp camera\n");
+		
+		bool renderable = false;
+		cam.findPlug("renderable").getValue(renderable);
+		os<<cam.name().asChar()<<" "<<renderable<<"\n";
+
+		if(renderable){
+			MGlobal::displayInfo("find renderable camera\n");
 			MDagPath dagCamPath;
 
 			if (MStatus::kFailure == itCamera.getPath(dagCamPath)) {
 				MGlobal::displayError("MDagPath::getPath");
 				return MStatus::kFailure;
 			}
-
-			processDagNode(dagCamPath,os);		
-
+			processDagNode(dagCamPath,os);	
 		}
 	}
 	outputRenderConfig(os);
@@ -281,7 +284,7 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 	os<<"end instgroup"<<"\n";
 	os<<"\n";
 
-	//os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
+	os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
 }
 
 void MayaExporterForER::render()
@@ -314,8 +317,6 @@ void MayaExporterForER::render_override()
 	//ei_camera("instperspShape");
 	//ei_resolution(opResolution.width,opResolution.height);
 	//ei_end_camera();
-
-	
 }
 
 void MayaExporterForER::render_setConfigure()
