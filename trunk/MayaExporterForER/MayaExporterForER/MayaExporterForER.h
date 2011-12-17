@@ -63,11 +63,11 @@ private:
 	void					setFinalGather(int f);
 	void                    setResolution(int width,int height);
 
-	//render embaded
+	//render embeded
 	void                    render_createScene();
 	void                    render_setOptions();
 	void                    render_setConfigure();
-	void                    render_setLinks();
+	//void                    render_setLinks();
 	void                    render_setGammaCorrection();
 	void                    render_override();
 	
