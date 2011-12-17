@@ -6,11 +6,18 @@
 #include <maya/MFnPhongShader.h>
 #include <maya/MFnPhongEShader.h>
 
+#include <maya/MItMeshEdge.h>
+#include <maya/MItMeshFaceVertex.h>
+#include <maya/MItMeshPolygon.h>
+#include <maya/MItMeshVertex.h>
+//#include <maya/MVector.h>
+
 MeshWriter::MeshWriter(MDagPath dagPath, MStatus status): DagNodeWriter(dagPath,status)
 {
 	fMesh = new MFnMesh(dagPath,&status);
 	fname = fMesh->name();
 	fInstName = MString("inst"+fname);
+	fPath = dagPath;
 }
 
 MeshWriter::~MeshWriter()
@@ -21,13 +28,40 @@ MeshWriter::~MeshWriter()
 MStatus MeshWriter::ExtractInfo()
 {
 	MGlobal::displayInfo("begin to extract info of mesh!\n");
-	
-	if (MStatus::kFailure == fMesh->getPoints(fVertexArray, MSpace::kObject)) {
+
+	MItMeshPolygon mitMeshPoly (fPath);
+
+	//new pos_list and nrm_list
+	int cnt = 0;
+	int faceCnt = 0;
+	for(;!mitMeshPoly.isDone();mitMeshPoly.next())
+	{
+		MGlobal::displayInfo("iterate poly!\n");
+		MPointArray trianglePoints;
+		MIntArray   trianglePointsIndex;
+		trianglePoints.clear();
+		trianglePointsIndex.clear();
+
+		mitMeshPoly.getTriangles(trianglePoints,trianglePointsIndex);
+
+		for(int i = 0;i<trianglePoints.length();++i)
+		{
+			fVertexArray.append(trianglePoints[i]);
+			
+			MVector faceVertexNormal;
+			fMesh->getFaceVertexNormal(faceCnt,trianglePointsIndex[i],faceVertexNormal);
+			fNormalArray.append(faceVertexNormal);
+			fFaceTriangleVertexArray.append(cnt++);
+		}
+		++faceCnt;
+	}
+
+	/*if (MStatus::kFailure == fMesh->getPoints(fVertexArray, MSpace::kObject)) {
 		MGlobal::displayError("MFnMesh::getPoints"); 
 		return MStatus::kFailure;
 	}
 
-	if(MStatus::kFailure == fMesh->getNormals(fNormalArray,MSpace::kWorld)/*getVertexNormals(false,fNormalArray,MSpace::kObject)*/){
+	if(MStatus::kFailure == fMesh->getNormals(fNormalArray,MSpace::kWorld)){
 		MGlobal::displayError("MFnMesh::getNormals");
 		return MStatus::kFailure;
 	}
@@ -35,7 +69,7 @@ MStatus MeshWriter::ExtractInfo()
 	if(MStatus::kFailure == fMesh->getTriangles(fFaceTriangleCntArray,fFaceTriangleVertexArray)){
 		MGlobal::displayError("MFnmesh::getTriangles");
 		return MStatus::kFailure;
-	}
+	}*/
 
 	if(MStatus::kFailure == fMesh->getConnectedShaders(0,fShaderArray,fShaderFaceArray)){
 		MGlobal::displayError("MFnmesh::getConnectedShaders");
@@ -57,10 +91,10 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 		return MStatus::kFailure;
 	}
 
-	/*if(MStatus::kFailure == outputNormal(os)) {
+	if(MStatus::kFailure == outputNormal(os)) {
 		MGlobal::displayError("outputNormal");
 		return MStatus::kFailure;
-	}*/
+	}
 
 	if(MStatus::kFailure == outputTriangleVertexIndex(os)) {
 		MGlobal::displayError("outputFaceVertexIndex");
@@ -70,6 +104,7 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 	os<<"\n";
 
 	outputInstance(os,fInstName);
+
 	return MStatus::kSuccess;
 }
 
@@ -88,7 +123,10 @@ MStatus MeshWriter::render()
 	}
 	MGlobal::displayInfo("set poly vertex succeed!\n");
 
-	//normal???
+	if(MStatus::kFailure == render_normal()){
+		MGlobal::displayError("renderNormal");
+		return MStatus::kFailure;
+	}
 
 	if(MStatus::kFailure == render_triangleVertexIndex()) {
 		MGlobal::displayError("renderFaceVertexIndex");
@@ -134,7 +172,7 @@ MStatus MeshWriter::render_vertex()
 	}
 	
 	//ei_pos_list(1024);
-	ei_pos_list(ei_tab(EI_DATA_TYPE_VECTOR, 1024));
+	ei_pos_list(ei_tab(EI_DATA_TYPE_VECTOR,vertexCnt));
 
 	for(int i = 0;i<vertexCnt;++i)
 	{
@@ -176,12 +214,15 @@ MStatus MeshWriter::render_normal()
 	}
 
 	//os<<"nrm_list "<<normalCnt<<"\n";
-	
+	eiTag tagVal = eiNULL_TAG;
+	ei_declare("N", eiVARYING, EI_DATA_TYPE_TAG, &tagVal);
+	tagVal = ei_tab(EI_DATA_TYPE_VECTOR, normalCnt); 
+	ei_variable("N", &tagVal);
 	for(int i = 0;i<normalCnt;++i)
 	{
-		//outputTabs(os,1);
-		//os<<StringPrintf("%.6lf %.6lf %.6lf\n",fNormalArray[i].x,fNormalArray[i].y,fNormalArray[i].z);	
+		ei_tab_add_vector(fNormalArray[i].x,fNormalArray[i].y,fNormalArray[i].z);
 	}
+	ei_end_tab();
 
 	return MStatus::kSuccess;
 }
@@ -219,7 +260,7 @@ MStatus MeshWriter::render_triangleVertexIndex()
 	}
 
 	//ei_triangle_list(indexCnt);
-	ei_triangle_list(ei_tab(EI_DATA_TYPE_VECTOR, 1024));
+	ei_triangle_list(ei_tab(EI_DATA_TYPE_VECTOR, indexCnt/3));
 
 	for(int i = 0;i<=indexCnt-3;i+=3)
 	{
