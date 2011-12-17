@@ -13,19 +13,14 @@
 
 #include <maya/MSimple.h>
 #include <maya/MString.h>
-#include <maya/MArgList.h>
-#include <maya/MFnPlugin.h>
 #include <maya/MPxCommand.h>
 #include <maya/MIOStream.h>
 #include <maya/MFileObject.h>
-#include <maya/MPxFileTranslator.h>
 #include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
 #include <maya/M3dView.h>
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
-
-#include <eiAPI\ei.h>
 
 #include <stdio.h>
 #include <math.h>
@@ -70,6 +65,7 @@ private:
 	MStatus					parseSyntax (MArgDatabase &argData);
     bool					readBmp();
 	RV_PIXEL				evaluate(int x, int y);
+	void				    readSceneStartEnd();
 
 private:
 	//Members for Render View of Step 3
@@ -81,9 +77,22 @@ private:
 	int						biBitCount;
 	int						lineByte;
 	bool					doNotClearBackground;
+
+	//frames
+	double					fStartFrame;
+	double					fEndFrame;
+	double					fByFrame;
 };
 
 ///////////////////////////////ER_Render_View_Fuc////////////////////////////////////////////////
+
+void ExportMayaScene::readSceneStartEnd()
+{
+	fStartFrame = 1;
+	fEndFrame   = 5;
+	fByFrame=1;
+}
+
 bool ExportMayaScene::readBmp( )
 {
 	FILE* fp = fopen( BmpName, "rb" );
@@ -237,40 +246,46 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 //
 {
 	MStatus stat = MS::kSuccess;
-
+	readSceneStartEnd();
 	// Since this class is derived off of MPxCommand, you can use the 
 	// inherited methods to return values and set error messages
 	//
-	
-	MayaExporterForER* exporter = new MayaExporterForER;
-	MString filename("mytest.ess");
-	MFileObject file;
-	file.setRawName(filename);
+	//loop start
+	for(double i=fStartFrame;i<=fEndFrame;i+=fByFrame)
+	{
+		MayaExporterForER* exporter = new MayaExporterForER;
+		MString filename("mytest.ess");
+		MFileObject file;
+		file.setRawName(filename);
 
-	exporter->parseArglist(args);
-	exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
-	
+		exporter->parseArglist(args);
 
-	setResult( "MayaExporterForER command executed!\n" );
+		MGlobal::viewFrame (i);//Set the current frame
+		//render the current frame i
+		exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
 
-	//render it into image
-	Render render;
+		setResult( "MayaExporterForER command executed!\n" );
+
+		//render it into image
+		Render render;
 
 #ifdef SAMPLE
-	render.parse("sample.ess");
-	render.overrideOptions(exporter);
-	ei_render("world","caminst1","opt");
-	//render.parse("mytest.ess");
-	//render.overrideOptions(exporter);
-	//ei_render("world","instperspShape","opt");
+		render.parse("sample.ess");
+		render.overrideOptions(exporter);
+		ei_render("world","caminst1","opt");
+		//render.parse("mytest.ess");
+		//render.overrideOptions(exporter);
+		//ei_render("world","instperspShape","opt");
 #else
-	exporter->render();
+		exporter->render();
 #endif
 
-	delete exporter;
+		delete exporter;
 
-	//flip the rendering output onto the Maya RenderViewWindow;
-	Exec(PicPathName);
+		//flip the rendering output onto the Maya RenderViewWindow;
+		Exec(PicPathName);
+		//loop end
+	}
 
 	return stat;
 }
