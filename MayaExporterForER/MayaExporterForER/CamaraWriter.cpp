@@ -66,9 +66,8 @@ MStatus CamaraWriter::render()
 
 	//outputOutPutConfig(os);
 	render_configure();
-	//os<<"add_imager \"gamma_correction_shader\"\n";
-	 
-	
+	ei_add_imager("gamma_correction_shader");
+
 	ei_focal(fFocal/10.0);
 	ei_aperture(fAperture*2.54);
 	ei_aspect(fAspect);

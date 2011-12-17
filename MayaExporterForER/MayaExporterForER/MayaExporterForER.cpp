@@ -123,6 +123,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	outputGammaCorrection(os);
 	
 	render_createScene();
+	render_setGammaCorrection();
 	render_setOptions();
 
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
@@ -473,7 +474,10 @@ void MayaExporterForER::outputGammaCorrection( ostream& os )
 
 void MayaExporterForER::render_setGammaCorrection()
 {
-	//???
+	ei_shader("gamma_correction_shader");
+		ei_shader_param_string("desc","gamma_imager");
+		ei_shader_param_scalar("gamma",opGamma);
+	ei_end_shader();
 }
 
 void MayaExporterForER::outputLinks( ostream& os )
@@ -487,13 +491,13 @@ void MayaExporterForER::outputLinks( ostream& os )
 	MGlobal::displayInfo("outputlinks succeed!\n");
 }
 
-void MayaExporterForER::render_setLinks()
+/*void MayaExporterForER::render_setLinks()
 {
 	for(int i = 0;i<shaders.length();++i)
 	{
 		ei_link(shaders[i].asChar());
 	}
-}
+}*/
 
 void MayaExporterForER::render_createScene()
 {
@@ -507,6 +511,7 @@ void MayaExporterForER::render_createScene()
 	ei_verbose(EI_VERBOSE_ALL);
 	ei_link("eiIMG");
 	ei_link("eiSHADER");
+	ei_link("gamma");
 }
 
 void MayaExporterForER::render_setOptions()
