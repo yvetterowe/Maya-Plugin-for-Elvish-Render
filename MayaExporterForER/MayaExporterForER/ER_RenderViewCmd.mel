@@ -62,7 +62,7 @@ global string $fraBy;
 window -menuBar true -width 400 -title "Elvish Render";
 
 menu -label "Help" -tearOff true;
-	menuItem -label "About";
+	menuItem -label "About" -command "openAbout";
 
 columnLayout;
  
@@ -90,8 +90,8 @@ frameLayout -collapsable true -label "Filter" -width 400;
 setParent..;
 
 frameLayout -collapsable true -label "Frame Range" -width 400;
-		string $fraStart = `floatFieldGrp -v1 0 -label "Start frame:"`;
-		string $fraEnd = `floatFieldGrp -v1 10 -label "End frame:"`;
+		string $fraStart = `floatFieldGrp -v1 1 -label "Start frame:"`;
+		string $fraEnd = `floatFieldGrp -v1 1 -label "End frame:"`;
 		string $fraBy = `floatFieldGrp -v1 1 -label "By frame:"`;
 setParent..;
 
@@ -124,6 +124,16 @@ columnLayout -adjustableColumn true;
 setParent..;
 
 showWindow;
+
+global proc openAbout()
+{
+	window -title "About";
+	columnLayout;
+	text -label "Maya Plugin for Elvish Render";
+	text -label "   developed by YellowS**t121 Girls";
+	text -label "@All right reserved";
+	showWindow;
+}
 
 global proc setOptions()
 {
