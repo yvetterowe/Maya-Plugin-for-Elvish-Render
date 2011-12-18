@@ -11,7 +11,7 @@ public:
 	CamaraWriter(MDagPath dagPath, MStatus status);
 	virtual ~CamaraWriter();
 	virtual MStatus			ExtractInfo();
-	virtual MStatus			WriteToFile(ostream& os);
+	//virtual MStatus			WriteToFile(ostream& os);
 	virtual MStatus         render();
 
 	//resolution config
@@ -20,7 +20,7 @@ public:
 private:
 
 	//helper methods
-	void outputOutPutConfig(ostream& os);
+	//void outputOutPutConfig(ostream& os);
 
 	//render
 	void render_configure();

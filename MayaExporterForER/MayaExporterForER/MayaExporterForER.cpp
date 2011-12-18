@@ -71,7 +71,8 @@ MStatus MayaExporterForER::writer( const MFileObject& file,
 	newFile.flush();
 	newFile.close();
 
-	MGlobal::displayInfo("Export to " + fileName + " successful!");
+	//MGlobal::displayInfo("Export to " + fileName + " successful!");
+	MGlobal::displayInfo("writer method succeed!\n");
 	return MS::kSuccess;
 }
 
@@ -118,9 +119,9 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 
 	MStatus status;
 
-	outputLinks(os);
+	/*outputLinks(os);
 	outputOptions(os);
-	outputGammaCorrection(os);
+	outputGammaCorrection(os);*/
 	
 	render_createScene();
 	render_setGammaCorrection();
@@ -150,7 +151,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 		}		
 	}
 
-	//for renderable camera
+	//find renderable camera
 	MItDag itCamera(MItDag::kDepthFirst, MFn::kCamera, &status);
 
 	if (MStatus::kFailure == status) {
@@ -178,7 +179,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 		}
 	}
 
-	outputRenderConfig(os);
+	//outputRenderConfig(os);
 	render_setConfigure();
 
 	return MStatus::kSuccess;
@@ -214,11 +215,11 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 		delete pWriter;
 		return MStatus::kFailure;
 	}
-	if (MStatus::kFailure == pWriter->WriteToFile(os)) {
+	/*if (MStatus::kFailure == pWriter->WriteToFile(os)) {
 		MGlobal::displayError("write to file fail!");
 		delete pWriter;
 		return MStatus::kFailure;
-	}
+	}*/
 	if (MStatus::kFailure == pWriter->render()){
 		MGlobal::displayError("render fail!");
 		delete pWriter;
@@ -278,7 +279,7 @@ MString MayaExporterForER::defaultExtension() const
 	return MString("ess");
 }
 
-void MayaExporterForER::outputRenderConfig( ostream& os )
+/*void MayaExporterForER::outputRenderConfig( ostream& os )
 {
 	os<<"instgroup \"world\""<<"\n";
 	for(int i = 0;i<instanceContainer.length();++i)
@@ -289,7 +290,7 @@ void MayaExporterForER::outputRenderConfig( ostream& os )
 	os<<"\n";
 
 	os<<"render "<<"\"world\" "<<"\""<<camaraInstance.asChar()<<"\" "<<"\"opt\"\n";
-}
+}*/
 
 void MayaExporterForER::render()
 {
@@ -333,7 +334,7 @@ void MayaExporterForER::render_setConfigure()
 	ei_instgroup("world");
 }
 
-void MayaExporterForER::outputOptions( ostream& os )
+/*void MayaExporterForER::outputOptions( ostream& os )
 {
 	os<<"options \"opt\""<<"\n";
 	os<<"\t"<<"contrast "<<opContrast.r<<" "
@@ -353,7 +354,7 @@ void MayaExporterForER::outputOptions( ostream& os )
 	os<<"\t"<<"finalgather "<<opFinalGather<<"\n";
 	os<<"end options"<<"\n";
 	os<<"\n";
-}
+}*/
 
 void MayaExporterForER::setContrast( double r,double g,double b,double a )
 {
@@ -462,7 +463,7 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 	}
 }
 
-void MayaExporterForER::outputGammaCorrection( ostream& os )
+/*void MayaExporterForER::outputGammaCorrection( ostream& os )
 {
 	MGlobal::displayInfo("begin to output gamma!\n");
 	os<<"shader "<<"\"gamma_correction_shader\"\n";
@@ -471,7 +472,7 @@ void MayaExporterForER::outputGammaCorrection( ostream& os )
 	os<<"end shader\n";
 	os<<"\n";
 	MGlobal::displayInfo("output gamma succeed!\n");
-}
+}*/
 
 void MayaExporterForER::render_setGammaCorrection()
 {
@@ -481,7 +482,7 @@ void MayaExporterForER::render_setGammaCorrection()
 	ei_end_shader();
 }
 
-void MayaExporterForER::outputLinks( ostream& os )
+/*void MayaExporterForER::outputLinks( ostream& os )
 {
 	MGlobal::displayInfo("begin to outputlinks!\n");
 	for(int i = 0;i<shaders.length();++i)
@@ -490,7 +491,7 @@ void MayaExporterForER::outputLinks( ostream& os )
 	}
 	os<<"\n";
 	MGlobal::displayInfo("outputlinks succeed!\n");
-}
+}*/
 
 
 void MayaExporterForER::render_createScene()

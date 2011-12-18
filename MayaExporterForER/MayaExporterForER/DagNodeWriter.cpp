@@ -23,21 +23,21 @@ DagNodeWriter::~DagNodeWriter()
 	if(fpath!=NULL) delete fpath;
 }
 
-void DagNodeWriter::outputTabs( ostream& os, int tabCount )
+/*void DagNodeWriter::outputTabs( ostream& os, int tabCount )
 {
 	for (int i = 0; i < tabCount; i++) {
 		os << "\t";
 	}
-}
+}*/
 
-void DagNodeWriter::outputInstance( ostream& os, MString instName )
+/*void DagNodeWriter::outputInstance( ostream& os, MString instName )
 {
 	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
 	outputTabs(os,1); os<<"element "<<"\""<<fname.asChar()<<"\"\n";
 	outputTabs(os,1); outputTransform(os);
 	os<<"end instance"<<"\n";
 	os<<"\n";
-}
+}*/
 
 void DagNodeWriter::render_instance(MString instName)
 {
@@ -52,7 +52,7 @@ MString DagNodeWriter::GetInstName()
 	return fInstName;
 }
 
-void DagNodeWriter::outputTransform( ostream& os )
+/*void DagNodeWriter::outputTransform( ostream& os )
 {
 	os<<"transform ";
 	for(int i = 0;i<4;++i)
@@ -63,7 +63,7 @@ void DagNodeWriter::outputTransform( ostream& os )
 		}
 	}
 	os<<"\n";
-}
+}*/
 
 void DagNodeWriter::render_transform()
 {

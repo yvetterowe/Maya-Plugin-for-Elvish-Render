@@ -17,9 +17,9 @@ public:
 	virtual ~MeshWriter();
 
 	virtual MStatus			ExtractInfo();
-	virtual MStatus			WriteToFile(ostream& os);
+	//virtual MStatus			WriteToFile(ostream& os);
 
-	virtual void			outputInstance(ostream&os,MString instName);
+	//virtual void			outputInstance(ostream&os,MString instName);
 	virtual MStatus         render();
 	virtual void            render_instance(MString instName);
 
@@ -37,10 +37,10 @@ private:
 	MString					fMaterialName;
 
 	//helper methods
-	MStatus					outputVertex(ostream& os);
+	/*MStatus					outputVertex(ostream& os);
 	MStatus					outputNormal(ostream& os);
 	MStatus					outputTriangleVertexIndex(ostream& os);
-	MStatus					outputShader(ostream& os);
+	MStatus					outputShader(ostream& os);*/
 
 	//render
 	MStatus                 render_shader();

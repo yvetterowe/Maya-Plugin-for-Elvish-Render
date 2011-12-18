@@ -40,7 +40,7 @@ MStatus CamaraWriter::ExtractInfo()
 	return MStatus::kSuccess;
 }
 
-MStatus CamaraWriter::WriteToFile( ostream& os )
+/*MStatus CamaraWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write camera info to file!\n");
 
@@ -57,7 +57,7 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 	outputInstance(os,fInstName);
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus CamaraWriter::render()
 {
@@ -83,12 +83,12 @@ MStatus CamaraWriter::render()
 
 }
 
-void CamaraWriter::outputOutPutConfig( ostream& os )
+/*void CamaraWriter::outputOutPutConfig( ostream& os )
 {
 	outputTabs(os,1); os<<"output "<<"\"test.bmp\" \"bmp\" \"rgb\""<<"\n";
 	outputTabs(os,2); os<<"output_variable \"color\" \"vector\""<<"\n";
 	outputTabs(os,1); os<<"end output"<<"\n";
-}
+}*/
 
 void CamaraWriter::render_configure()
 {
