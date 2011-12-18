@@ -25,6 +25,10 @@ global int $rH;
 
 global float $g;
 
+global float $fS;
+global float $fE;
+global float $fB;
+
 //ui command
 global string $cstR;
 global string $cstG;
@@ -50,6 +54,10 @@ global string $resoHeight;
 
 global string $gamCorrect;
 
+global string $fraStart;
+global string $fraEnd;
+global string $fraBy;
+
 //ui layout
 window -menuBar true -width 400 -title "Elvish Render";
 
@@ -71,7 +79,6 @@ frameLayout -collapsable true -label "Sample Rate" -width 400;
 setParent..;
 
 frameLayout -collapsable true -label "Filter" -width 400;
-	columnLayout -columnAlign "center";
 		string $filType = `optionMenuGrp -label "Type"`;
 			menuItem -label "none";
 			menuItem -label "box";
@@ -80,31 +87,36 @@ frameLayout -collapsable true -label "Filter" -width 400;
 			menuItem -label "gaussian";
 			menuItem -label "sinc";
 		string $filSize = `floatFieldGrp -v1 3.0 -precision 1 -label "Size:"`;
-	setParent..;
+setParent..;
+
+frameLayout -collapsable true -label "Frame Range" -width 400;
+		string $fraStart = `floatFieldGrp -v1 0 -label "Start frame:"`;
+		string $fraEnd = `floatFieldGrp -v1 10 -label "End frame:"`;
+		string $fraBy = `floatFieldGrp -v1 1 -label "By frame:"`;
 setParent..;
 
 frameLayout -collapsable true -label "Trace Depth" -width 400;
-	columnLayout;
+	//columnLayout;
 		string $trcRel = `intFieldGrp -v1 0 -label "Reflect:"`;
-		string $trcRer = `intFieldGrp -v1 0 -label "Refrect:"`;
+		string $trcRer = `intFieldGrp -v1 0 -label "Refract:"`;
 		string $trcSum = `intFieldGrp -v1 0 -label "Sum:"`;
-	setParent..;
+	//setParent..;
 setParent..;
 
 frameLayout -collapsable true -label "Photon Mapping" -width 400;
-	columnLayout;
+	//columnLayout;
 		string $illuType = `checkBoxGrp -l "Enable global illumination"`;
 		string $gathType = `checkBoxGrp -l "Enable final gather"`;
 		string $casiType = `checkBoxGrp -l "Enable caustics"`;
-	setParent;
+	//setParent;
 setParent;
 
 frameLayout -collapsable true -label "Image Output" -width 400;
-	columnLayout;
+	//columnLayout;
 		string $resoWidth = `intFieldGrp -v1 640 -label "Width:"`;
 		string $resoHeight = `intFieldGrp -v1 480 -label "Height:"`;	
 		string $gamCorrect = `floatSliderGrp -label "Gamma Correction:" -field true -value 1.00 -precision 2 -minValue 0.01 -maxValue 9.99`;	
-	setParent..;
+	//setParent..;
 setParent..;
 
 columnLayout -adjustableColumn true;
@@ -141,6 +153,10 @@ global proc setOptions()
 
 	global float $g;
 
+	global float $fS;
+	global float $fE;
+	global float $fB;
+
 	//ui command string
 	global string $cstR;
 	global string $cstG;
@@ -166,6 +182,10 @@ global proc setOptions()
 
 	global string $gamCorrect;
 
+	global string $fraStart;
+	global string $fraEnd;
+	global string $fraBy;
+
 	//get input field value
 	$cR = `floatFieldGrp -q -v1 $cstR`;
 	$cG = `floatFieldGrp -q -v1 $cstG`;
@@ -189,8 +209,13 @@ global proc setOptions()
 	$rW = `intFieldGrp -q -v1 $resoWidth`; 
 	$rH = `intFieldGrp -q -v1 $resoHeight`;
 	$g = `floatSliderGrp -q -v $gamCorrect`;
+
+	$fS = `floatFieldGrp -q -v1 $fraStart`;
+	$fE = `floatFieldGrp -q -v1 $fraEnd`;
+	$fB = `floatFieldGrp -q -v1 $fraBy`;
 	
-	ExportMayaScene -contrast $cR $cG $cB $cA
+	ExportMayaScene -frameInfo $fS $fE $fB
+			-contrast $cR $cG $cB $cA
 			-sample $spMin $spMax
 			-filter $fName $fSize
 			-traceDepth $tRf $tRr $tS
