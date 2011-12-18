@@ -271,26 +271,26 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 		//render the current frame i
 		exporter->writer(file,"none",MPxFileTranslator::kExportAccessMode);
 
-		setResult( "MayaExporterForER command executed!\n" );
-
 		//render it into image
 		Render render;
 
-#ifdef SAMPLE
+/*#ifdef SAMPLE
 		render.parse("sample.ess");
 		render.overrideOptions(exporter);
 		ei_render("world","caminst1","opt");
 		//render.parse("mytest.ess");
 		//render.overrideOptions(exporter);
-		//ei_render("world","instperspShape","opt");
-#else
+		//ei_render("world","instperspShape","opt");*/
+//#else
 		exporter->render();
-#endif
+//#endif
 
 		delete exporter;
 
 		//flip the rendering output onto the Maya RenderViewWindow;
 		Exec(PicPathName);
+		
+		MGlobal::displayInfo( "MayaExporterForER command executed!\n" );
 		//loop end
 	}
 

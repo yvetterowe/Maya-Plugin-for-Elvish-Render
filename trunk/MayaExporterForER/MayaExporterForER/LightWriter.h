@@ -14,7 +14,7 @@ public:
 	LightWriter(MDagPath dagPath, MStatus status);
 	virtual ~LightWriter();
 	virtual MStatus				ExtractInfo();
-	virtual MStatus				WriteToFile(ostream& os);
+	//virtual MStatus				WriteToFile(ostream& os);
 
 	virtual MStatus             render();
 

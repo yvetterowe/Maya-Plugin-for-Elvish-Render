@@ -47,7 +47,7 @@ MStatus DirectLightWriter::ExtractInfo()
 }
 
 
-MStatus DirectLightWriter::WriteToFile( ostream& os )
+/*MStatus DirectLightWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write directlight info to file!\n");
 
@@ -70,7 +70,7 @@ MStatus DirectLightWriter::WriteToFile( ostream& os )
 
 	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus DirectLightWriter::render()
 {

@@ -32,7 +32,7 @@ public:
 	void                    render();
 
 	//get options
-	OpContrast				getContrast()			{ return opContrast;}
+	/*OpContrast				getContrast()			{ return opContrast;}
 	OpSample				getSample()				{ return opSample;}
 	OpFilter				getFilter()				{ return opFilter;}
 	OpTraceDepth			getTraceDepth()			{ return opTraceDepth;}
@@ -40,7 +40,7 @@ public:
 	int						getFinalGather()		{ return opFinalGather;}
 	int						getCaustic()			{ return opCaustic;}
 	OpResolution			getResolution()			{ return opResolution;}
-	double					getGamma()              { return opGamma;}
+	double					getGamma()              { return opGamma;}*/
 
 
 private: 
@@ -50,10 +50,10 @@ private:
 	DagNodeWriter*			createDagNodeWriter(const MDagPath dagPath, MStatus& status);
 
 	//more outputs
-	void					outputRenderConfig(ostream& os);
+	/*void					outputRenderConfig(ostream& os);
 	void                    outputOptions(ostream& os);
 	void					outputLinks(ostream& os);
-	void					outputGammaCorrection(ostream& os);
+	void					outputGammaCorrection(ostream& os);*/
 
 	//set options
 	void					setContrast(double r,double g,double b,double a);

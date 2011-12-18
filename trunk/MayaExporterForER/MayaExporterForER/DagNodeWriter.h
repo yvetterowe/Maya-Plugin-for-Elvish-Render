@@ -19,10 +19,10 @@ public:
 	virtual ~DagNodeWriter();
 
 	virtual MStatus			ExtractInfo() = 0;
-	virtual MStatus			WriteToFile(ostream& os) = 0;
+	//virtual MStatus			WriteToFile(ostream& os) = 0;
 	virtual MStatus         render() = 0;
 
-	virtual void			outputInstance(ostream& os, MString instName);
+	//virtual void			outputInstance(ostream& os, MString instName);
 	virtual void            render_instance(MString instName);
 
 	void					openPhoton();
@@ -31,8 +31,8 @@ public:
 
 protected:
 	//helpers
-	static void				outputTabs (ostream & os, int tabCount);
-	void					outputTransform(ostream& os);
+	//static void				outputTabs (ostream & os, int tabCount);
+	//void					outputTransform(ostream& os);
           
 
 	//render

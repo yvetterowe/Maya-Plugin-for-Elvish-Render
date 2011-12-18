@@ -14,10 +14,10 @@ MStatus LightWriter::ExtractInfo()
 	return MStatus::kSuccess;
 }
 
-MStatus LightWriter::WriteToFile( ostream& os )
+/*MStatus LightWriter::WriteToFile( ostream& os )
 {
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus LightWriter::render()
 {

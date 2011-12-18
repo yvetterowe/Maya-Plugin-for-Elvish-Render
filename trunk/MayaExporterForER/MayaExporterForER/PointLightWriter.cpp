@@ -36,7 +36,7 @@ MStatus PointLightWriter::ExtractInfo()
 }
 
 
-MStatus PointLightWriter::WriteToFile( ostream& os )
+/*MStatus PointLightWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write pointlight info to file!\n");
 
@@ -59,7 +59,7 @@ MStatus PointLightWriter::WriteToFile( ostream& os )
 
 	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus PointLightWriter::render()
 {

@@ -80,7 +80,7 @@ MStatus MeshWriter::ExtractInfo()
 	return MStatus::kSuccess;
 }
 
-MStatus MeshWriter::WriteToFile( ostream& os )
+/*MStatus MeshWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write mesh info to file!\n");
 	
@@ -108,7 +108,7 @@ MStatus MeshWriter::WriteToFile( ostream& os )
 	outputInstance(os,fInstName);
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus MeshWriter::render()
 {
@@ -148,7 +148,7 @@ MStatus MeshWriter::render()
 
 
 
-MStatus MeshWriter::outputVertex( ostream& os )
+/*MStatus MeshWriter::outputVertex( ostream& os )
 {
 	MGlobal::displayInfo("begin to output vertex!\n");
 	int vertexCnt = fVertexArray.length();
@@ -166,7 +166,7 @@ MStatus MeshWriter::outputVertex( ostream& os )
 	}
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus MeshWriter::render_vertex()
 {
@@ -189,7 +189,7 @@ MStatus MeshWriter::render_vertex()
 	return MStatus::kSuccess;
 }
 
-MStatus MeshWriter::outputNormal( ostream& os )
+/*MStatus MeshWriter::outputNormal( ostream& os )
 {
 	MGlobal::displayInfo("begin to output normal!\n");
 
@@ -208,7 +208,7 @@ MStatus MeshWriter::outputNormal( ostream& os )
 	}
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus MeshWriter::render_normal()
 {
@@ -232,10 +232,10 @@ MStatus MeshWriter::render_normal()
 	return MStatus::kSuccess;
 }
 
-MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
+/*MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
 {
 	MGlobal::displayInfo("begin to output triangleindex!\n");
-	
+
 	int indexCnt = fFaceTriangleVertexArray.length();
 	if(indexCnt == 0) {
 		return MStatus::kFailure;
@@ -248,12 +248,12 @@ MStatus MeshWriter::outputTriangleVertexIndex( ostream& os )
 	{
 		outputTabs(os,1);
 		os<<fFaceTriangleVertexArray[i]<<" "
-		  <<fFaceTriangleVertexArray[i+1]<<" "
-		  <<fFaceTriangleVertexArray[i+2]<<"\n";
+			<<fFaceTriangleVertexArray[i+1]<<" "
+			<<fFaceTriangleVertexArray[i+2]<<"\n";
 	}
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus MeshWriter::render_triangleVertexIndex()
 {
@@ -278,7 +278,7 @@ MStatus MeshWriter::render_triangleVertexIndex()
 	return MStatus::kSuccess;
 }
 
-MStatus MeshWriter::outputShader( ostream& os )
+/*MStatus MeshWriter::outputShader( ostream& os )
 {
 	MGlobal::displayInfo("begin to output shaders!\n");
 	if(fShaderArray.length() == 0){
@@ -321,7 +321,7 @@ MStatus MeshWriter::outputShader( ostream& os )
 	}
 
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus MeshWriter::render_shader()
 {
@@ -404,7 +404,7 @@ MStatus MeshWriter::render_shader()
 	return MStatus::kSuccess;
 }
 
-void MeshWriter::outputInstance( ostream&os,MString instName )
+/*void MeshWriter::outputInstance( ostream&os,MString instName )
 {
 	os<<"instance "<<"\""<<instName.asChar()<<"\"\n";
 	outputTabs(os,1); os<<"element "<<"\""<<fname.asChar()<<"\"\n";
@@ -412,7 +412,7 @@ void MeshWriter::outputInstance( ostream&os,MString instName )
 	outputTabs(os,1); outputTransform(os);
 	os<<"end instance"<<"\n";
 	os<<"\n";
-}
+}*/
 
 void MeshWriter::render_instance(MString instName)
 {

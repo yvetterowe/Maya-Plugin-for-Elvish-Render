@@ -5,7 +5,7 @@ void Render::parse(MString filename)
 	ei_parse(filename.asChar());
 }
 
-void Render::overrideOptions(MayaExporterForER* exporter)
+/*void Render::overrideOptions(MayaExporterForER* exporter)
 {
 	ei_options("opt");
 
@@ -35,7 +35,7 @@ void Render::overrideOptions(MayaExporterForER* exporter)
 
 	ei_end_options();
 
-}
+}*/
 
 void Render::createScene()
 {

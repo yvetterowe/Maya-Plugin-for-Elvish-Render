@@ -9,7 +9,7 @@ public:
 	PointLightWriter(MDagPath dagPath, MStatus status);
 	virtual ~PointLightWriter();
 	virtual MStatus				ExtractInfo();
-	virtual MStatus				WriteToFile(ostream& os);
+	//virtual MStatus				WriteToFile(ostream& os);
 	virtual MStatus             render();                                           
 
 private:

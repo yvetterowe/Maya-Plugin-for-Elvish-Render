@@ -45,7 +45,7 @@ MStatus SpotLightWriter::ExtractInfo()
 }
 
 
-MStatus SpotLightWriter::WriteToFile( ostream& os )
+/*MStatus SpotLightWriter::WriteToFile( ostream& os )
 {
 	MGlobal::displayInfo("begin to write spotlight info to file!\n");
 
@@ -69,7 +69,7 @@ MStatus SpotLightWriter::WriteToFile( ostream& os )
 
 	outputInstance(os,fInstName);
 	return MStatus::kSuccess;
-}
+}*/
 
 MStatus SpotLightWriter::render()
 {
