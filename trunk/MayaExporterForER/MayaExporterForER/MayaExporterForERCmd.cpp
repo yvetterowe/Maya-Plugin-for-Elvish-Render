@@ -65,7 +65,7 @@ private:
 	MStatus					parseSyntax (MArgDatabase &argData);
     bool					readBmp();
 	RV_PIXEL				evaluate(int x, int y);
-	void				    readSceneStartEnd();
+	void				    readSceneStartEnd(const MArgList& args);
 
 private:
 	//Members for Render View of Step 3
@@ -86,11 +86,18 @@ private:
 
 ///////////////////////////////ER_Render_View_Fuc////////////////////////////////////////////////
 
-void ExportMayaScene::readSceneStartEnd()
+void ExportMayaScene::readSceneStartEnd(const MArgList& args)
 {
-	fStartFrame = 1;
-	fEndFrame   = 5;
-	fByFrame=1;
+	for(int i = 0;i<args.length();++i)
+	{
+		if(args.asString(i) == "-frameInfo"){
+			fStartFrame = args.asDouble(i+1);
+			fEndFrame = args.asDouble(i+2);
+			fByFrame = args.asDouble(i+3);
+
+			break;
+		}
+	}
 }
 
 bool ExportMayaScene::readBmp( )
@@ -246,7 +253,7 @@ MStatus ExportMayaScene::doIt( const MArgList& args )
 //
 {
 	MStatus stat = MS::kSuccess;
-	readSceneStartEnd();
+	readSceneStartEnd(args);
 	// Since this class is derived off of MPxCommand, you can use the 
 	// inherited methods to return values and set error messages
 	//
