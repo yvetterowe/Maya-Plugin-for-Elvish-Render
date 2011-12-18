@@ -1,3 +1,5 @@
+RenderViewWindow;
+
 //ui values
 global float $cR;
 global float $cG;
@@ -15,8 +17,8 @@ global int $tRl;
 global int $tS;
 
 global int $il;
-
 global int $fg;
+global int $ct;
 
 global int $rW;
 global int $rH;
@@ -40,8 +42,8 @@ global string $trcRer;
 global string $trcSum;
 
 global string $illuType;
-
 global string $gathType;
+global string $casiType;
 
 global string $resoWidth;
 global string $resoHeight;
@@ -89,17 +91,13 @@ frameLayout -collapsable true -label "Trace Depth" -width 400;
 	setParent..;
 setParent..;
 
-frameLayout -collapsable true -label "Global Illumination" -width 400;
+frameLayout -collapsable true -label "Photon Mapping" -width 400;
 	columnLayout;
 		string $illuType = `checkBoxGrp -l "Enable global illumination"`;
-	setParent;
-setParent..;
-
-frameLayout -collapsable true -label "Final Gather" -width 400;
-	columnLayout;
 		string $gathType = `checkBoxGrp -l "Enable final gather"`;
+		string $casiType = `checkBoxGrp -l "Enable caustics"`;
 	setParent;
-setParent..;
+setParent;
 
 frameLayout -collapsable true -label "Image Output" -width 400;
 	columnLayout;
@@ -135,8 +133,8 @@ global proc setOptions()
 	global int $tS;
 
 	global int $il;
-
 	global int $fg;
+	global int $ct;
 
 	global int $rW;
 	global int $rH;
@@ -160,8 +158,8 @@ global proc setOptions()
 	global string $trcSum;
 
 	global string $illuType;
-	
 	global string $gathType;
+	global string $casiType;
 
 	global string $resoWidth;
 	global string $resoHeight;
@@ -185,13 +183,12 @@ global proc setOptions()
 	$tS = `intFieldGrp -q -v1 $trcSum`;
 
 	$il = `checkBoxGrp -q -v1 $illuType`;
-
 	$fg = `checkBoxGrp -q -v1 $gathType`;
+	$ct = `checkBoxGrp -q -v1 $casiType`;
 
 	$rW = `intFieldGrp -q -v1 $resoWidth`; 
 	$rH = `intFieldGrp -q -v1 $resoHeight`;
 	$g = `floatSliderGrp -q -v $gamCorrect`;
-	
 	
 	ExportMayaScene -contrast $cR $cG $cB $cA
 			-sample $spMin $spMax
@@ -199,8 +196,7 @@ global proc setOptions()
 			-traceDepth $tRf $tRr $tS
 			-globalIllumi $il
 			-finalGather $fg
+			-caustic $ct
 			-resolution $rW $rH
 			-gamma $g;
-
-	RenderViewWindow;
 }

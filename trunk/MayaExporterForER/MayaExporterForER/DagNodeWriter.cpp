@@ -77,3 +77,8 @@ void DagNodeWriter::render_transform()
 		         fTransMat(3,2),fTransMat(3,3));
 
 }
+
+void DagNodeWriter::openPhoton()
+{
+	isPhotonOpen = true;
+}

@@ -19,6 +19,10 @@ public:
 	virtual MStatus             render();
 
 protected:
+	//emitter config
+	void						render_emitter();
+	
+	//light common attributes
 	float                       fIntensity;
 	MColor						fColor;
 	MString						fShaderName;

@@ -60,7 +60,8 @@ MStatus CamaraWriter::WriteToFile( ostream& os )
 }
 
 MStatus CamaraWriter::render()
-{MGlobal::displayInfo("render camera !\n");
+{
+	MGlobal::displayInfo("render camera !\n");
 
 	ei_camera(fname.asChar());
 
@@ -71,7 +72,8 @@ MStatus CamaraWriter::render()
 	ei_focal(fFocal/10.0);
 	ei_aperture(fAperture*2.54);
 	ei_aspect(fAspect);
-	ei_resolution(640,480);
+	//ei_resolution(640,480);
+	ei_resolution(fWidth,fHeight);
 
 	ei_end_camera();
 
@@ -100,4 +102,10 @@ void CamaraWriter::render_configure()
 	//ei_output("C:\\Users\\lenovo\\code\\cg\\ElvishRenderer\\build\\r990\\x86\\test.bmp","bmp",EI_IMG_DATA_RGB);
 	ei_output_variable("color", EI_DATA_TYPE_VECTOR);
 	ei_end_output();
+}
+
+void CamaraWriter::setResolution( int w,int h )
+{
+	fWidth = w;
+	fHeight = h;
 }

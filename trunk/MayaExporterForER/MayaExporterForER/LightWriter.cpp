@@ -23,3 +23,10 @@ MStatus LightWriter::render()
 {
 	return MStatus::kSuccess;
 }
+
+void LightWriter::render_emitter()
+{
+	ei_shader("emitter_shader");
+		ei_shader_param_string("desc","sphere_emitter");
+	ei_end_shader();
+}
