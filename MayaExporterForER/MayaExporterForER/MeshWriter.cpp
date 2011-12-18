@@ -18,6 +18,8 @@ MeshWriter::MeshWriter(MDagPath dagPath, MStatus status): DagNodeWriter(dagPath,
 	fname = fMesh->name();
 	fInstName = MString("inst"+fname);
 	fPath = dagPath;
+
+	isPhotonOpen = false;
 }
 
 MeshWriter::~MeshWriter()
@@ -113,6 +115,10 @@ MStatus MeshWriter::render()
 	MGlobal::displayInfo("render mesh!\n");
 	
 	render_shader();
+
+	if(isPhotonOpen){
+		render_photon();
+	}
 
 	ei_object(fname.asChar(),"poly");
 	MGlobal::displayInfo("set poly name succeed!\n");
@@ -213,7 +219,6 @@ MStatus MeshWriter::render_normal()
 		return MStatus::kFailure;
 	}
 
-	//os<<"nrm_list "<<normalCnt<<"\n";
 	eiTag tagVal = eiNULL_TAG;
 	ei_declare("N", eiVARYING, EI_DATA_TYPE_TAG, &tagVal);
 	tagVal = ei_tab(EI_DATA_TYPE_VECTOR, normalCnt); 
@@ -259,7 +264,6 @@ MStatus MeshWriter::render_triangleVertexIndex()
 		return MStatus::kFailure;
 	}
 
-	//ei_triangle_list(indexCnt);
 	ei_triangle_list(ei_tab(EI_DATA_TYPE_VECTOR, indexCnt/3));
 
 	for(int i = 0;i<=indexCnt-3;i+=3)
@@ -340,7 +344,7 @@ MStatus MeshWriter::render_shader()
 
 		for(int j = 0;j<connections.length();++j)
 		{
-			//lambert
+			//lambert shader
 			if(connections[j].node().hasFn(MFn::kLambert)){
 				MGlobal::displayInfo("find lambert shader!\n");
 				MFnLambertShader lambertShader(connections[j].node());
@@ -365,7 +369,7 @@ MStatus MeshWriter::render_shader()
 
 			}
 
-			//phong
+			//phong shader
 			if(connections[j].node().hasFn(MFn::kPhong)){
 				MGlobal::displayInfo("find phong shader!\n");
 				MFnPhongShader phongShader(connections[j].node());
@@ -389,6 +393,9 @@ MStatus MeshWriter::render_shader()
 				ei_material(fMaterialName.asChar());
 					ei_add_surface(phongShader.name().asChar());
 					ei_add_shadow("opaque_shadow");
+					if(isPhotonOpen){
+						ei_add_photon("photon_mapping_shader");
+					}
 				ei_end_material();
 			}
 		}
@@ -415,4 +422,13 @@ void MeshWriter::render_instance(MString instName)
 		render_transform();
 	ei_end_instance();
 
+}
+
+MStatus MeshWriter::render_photon()
+{
+	ei_shader("photon_mapping_shader");
+		ei_shader_param_string("desc","simple_photon");
+	ei_end_shader();
+
+	return MStatus::kSuccess;
 }

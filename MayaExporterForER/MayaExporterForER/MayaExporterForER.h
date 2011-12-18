@@ -38,6 +38,7 @@ public:
 	OpTraceDepth			getTraceDepth()			{ return opTraceDepth;}
 	int						getGloabalIllumi()		{ return opGlobalIllumi;}
 	int						getFinalGather()		{ return opFinalGather;}
+	int						getCaustic()			{ return opCaustic;}
 	OpResolution			getResolution()			{ return opResolution;}
 	double					getGamma()              { return opGamma;}
 
@@ -61,13 +62,13 @@ private:
 	void					setTraceDepth(int tRl,int tRR,int tSum);
 	void					setGlobalIllumi(int g);
 	void					setFinalGather(int f);
+	void					setCaustic(int c);
 	void                    setResolution(int width,int height);
 
 	//render embeded
 	void                    render_createScene();
 	void                    render_setOptions();
 	void                    render_setConfigure();
-	//void                    render_setLinks();
 	void                    render_setGammaCorrection();
 	void                    render_override();
 	
@@ -83,15 +84,15 @@ private:
 	OpTraceDepth			opTraceDepth;
 	int						opGlobalIllumi;
 	int						opFinalGather;
+	int						opCaustic;
 	OpResolution			opResolution;
 
+	//gamma correction
 	double					opGamma;
 
 	//more self-defined shaders
 	MStringArray			shaders;
 
 	//current dir
-	//char cur_dir[EI_MAX_FILE_NAME_LEN];
-
-	
+	//char cur_dir[EI_MAX_FILE_NAME_LEN];	
 };

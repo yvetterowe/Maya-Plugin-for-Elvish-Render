@@ -126,6 +126,7 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 	render_setGammaCorrection();
 	render_setOptions();
 
+	//for each visible DagNode in the scene
 	MItDag itDag(MItDag::kDepthFirst, MFn::kInvalid, &status);
 
 	if (MStatus::kFailure == status) {
@@ -176,10 +177,10 @@ MStatus MayaExporterForER::exportAll( ostream& os )
 			processDagNode(dagCamPath,os);	
 		}
 	}
+
 	outputRenderConfig(os);
 	render_setConfigure();
 
-	//ei_render("world",camaraInstance.asChar(),"opt");
 	return MStatus::kSuccess;
 }
 
@@ -189,6 +190,7 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 	
 	MStatus status;
 	DagNodeWriter* pWriter = createDagNodeWriter(dagPath, status);
+	
 	if(NULL == pWriter){
 		MGlobal::displayInfo("pWriter null!");
 		return MStatus::kFailure;
@@ -204,6 +206,7 @@ MStatus MayaExporterForER::processDagNode( const MDagPath dagPath, ostream& os )
 	
 	if(dagPath.apiType() == MFn::kCamera){
 		camaraInstance = pWriter->GetInstName();
+		dynamic_cast<CamaraWriter*>(pWriter)->setResolution(opResolution.width,opResolution.height);
 	}
 
 	if (MStatus::kFailure == pWriter->ExtractInfo()) {
@@ -411,6 +414,11 @@ void MayaExporterForER::setFinalGather( int f )
 	opFinalGather = f;
 }
 
+void MayaExporterForER::setCaustic( int c )
+{
+	opCaustic = c;
+}
+
 void MayaExporterForER::setResolution(int w,int h)
 {
 	opResolution.width = w;
@@ -423,8 +431,6 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 	{
 		if(args.asString(i) == "-contrast"){
 			setContrast(args.asDouble(i+1),args.asDouble(i+2),args.asDouble(i+3),args.asDouble(i+4));
-			MGlobal::displayInfo(args.asString(i));
-			MGlobal::displayInfo(args.asString(i+1));
 		}
 		else if(args.asString(i) == "-sample"){
 			setSample(args.asInt(i+1),args.asInt(i+2));
@@ -434,20 +440,15 @@ void MayaExporterForER::parseArglist( const MArgList& args )
 		}
 		else if(args.asString(i) == "-traceDepth"){
 			setTraceDepth(args.asInt(i+1),args.asInt(i+2),args.asInt(i+3));
-			MGlobal::displayInfo(args.asString(i));
-			MGlobal::displayInfo(args.asString(i+1));
-			MGlobal::displayInfo(args.asString(i+2));
-			MGlobal::displayInfo(args.asString(i+3));
 		}
 		else if(args.asString(i) == "-globalIllumi"){
 			setGlobalIllumi(args.asInt(i+1));
 		}
 		else if(args.asString(i) == "-finalGather"){
 			setFinalGather(args.asInt(i+1));
-
-			//for test
-			MGlobal::displayInfo(args.asString(i));
-			MGlobal::displayInfo(args.asString(i+1));
+		}
+		else if(args.asString(i) == "-caustic"){
+			setCaustic(args.asInt(i+1));
 		}
 		else if(args.asString(i) == "-resolution"){
 			setResolution(args.asInt(i+1),args.asInt(i+2));
@@ -491,13 +492,6 @@ void MayaExporterForER::outputLinks( ostream& os )
 	MGlobal::displayInfo("outputlinks succeed!\n");
 }
 
-/*void MayaExporterForER::render_setLinks()
-{
-	for(int i = 0;i<shaders.length();++i)
-	{
-		ei_link(shaders[i].asChar());
-	}
-}*/
 
 void MayaExporterForER::render_createScene()
 {
@@ -519,13 +513,14 @@ void MayaExporterForER::render_setOptions()
 	ei_options("opt");
 	    ei_contrast(opContrast.r, opContrast.g, opContrast.b, opContrast.a);
 		ei_samples(opSample.sMin, opSample.sMax);
-		if(opFilter.fTypeId>0)
+		if(opFilter.fTypeId>0){
 			ei_filter(opFilter.fTypeId, opFilter.fSize);
+		}
 		ei_trace_depth(opTraceDepth.reflect,opTraceDepth.refrect,opTraceDepth.sum);
 		ei_globillum(opGlobalIllumi);
 		ei_finalgather(opFinalGather);
+		ei_caustic(opCaustic);
 	ei_end_options();
 }
-
 
 

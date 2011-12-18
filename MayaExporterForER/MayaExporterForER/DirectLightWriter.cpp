@@ -12,7 +12,6 @@ DirectLightWriter::DirectLightWriter( MDagPath dagPath, MStatus status ) :LightW
 	MVector d(0,0,1000);
 	fTransmatOrigin.addTranslation(d,MSpace::kObject);
 	fTransMat = fTransmatOrigin.asMatrix();
-
 }
 
 DirectLightWriter::~DirectLightWriter()
@@ -77,6 +76,10 @@ MStatus DirectLightWriter::render()
 {
 	MGlobal::displayInfo("render directlight !\n");
 
+	if(isPhotonOpen){
+		render_emitter();
+	}
+
 	//light_shader
 	ei_shader(fShaderName.asChar());
 	    ei_shader_param_string("desc","directlight");
@@ -90,8 +93,10 @@ MStatus DirectLightWriter::render()
 	//light
 	ei_light(fname.asChar());
 	    ei_add_light(fShaderName.asChar());
-		//ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
 		ei_origin(0.0,0.0,0.0);
+		if(isPhotonOpen){
+			ei_add_emitter("emitter_shader");
+		}
 	ei_end_light();
 
 	render_instance(fInstName);

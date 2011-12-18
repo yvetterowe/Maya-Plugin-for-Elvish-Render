@@ -64,6 +64,10 @@ MStatus PointLightWriter::WriteToFile( ostream& os )
 MStatus PointLightWriter::render()
 {
 	MGlobal::displayInfo("begin to render point light!\n");
+
+	if(isPhotonOpen){
+		render_emitter();
+	}
 	
 	ei_shader(fShaderName.asChar());
 	   ei_shader_param_string("desc","pointlight");
@@ -72,8 +76,11 @@ MStatus PointLightWriter::render()
 	ei_end_shader();
 
 	ei_light(fname.asChar());
-	ei_add_light(fShaderName.asChar());
-	ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
+		ei_add_light(fShaderName.asChar());
+		ei_origin(fTranslation.x,fTranslation.y,fTranslation.z);
+		if(isPhotonOpen){
+			ei_add_emitter("emitter_shader");
+		}
 	ei_end_light();
 
 	render_instance(fInstName);

@@ -18,11 +18,14 @@ public:
 
 	virtual MStatus			ExtractInfo();
 	virtual MStatus			WriteToFile(ostream& os);
+
 	virtual void			outputInstance(ostream&os,MString instName);
 	virtual MStatus         render();
 	virtual void            render_instance(MString instName);
 
 private:
+	
+	//scene info
 	MFnMesh*				fMesh;
 	MDagPath                fPath;
 	MPointArray				fVertexArray;
@@ -44,4 +47,5 @@ private:
 	MStatus                 render_vertex();
 	MStatus                 render_normal();
 	MStatus                 render_triangleVertexIndex();
+	MStatus					render_photon();
 };
